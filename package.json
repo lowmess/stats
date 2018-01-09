@@ -1,0 +1,48 @@
+{
+  "name": "stats",
+  "version": "1.0.0",
+  "description": "Stats API for my about page",
+  "main": "./src/server.js",
+  "scripts": {
+    "start": "nodemon ./src/server.js --exec babel-node -e js",
+    "precommit": "lint-staged"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lowmess/stats.git"
+  },
+  "author": "Alec Lomas <alec@lowmess.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-plugin-transform-async-generator-functions": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "^6.23.0",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-latest": "^6.23.0",
+    "eslint": "3.19.0",
+    "eslint-config-lowmess": "1.1.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^6.0.0",
+    "nodemon": "^1.11.0",
+    "prettier": "^1.9.2"
+  },
+  "dependencies": {
+    "apollo-engine": "^0.5.2",
+    "apollo-server-express": "^1.2.0",
+    "apollo-tracing": "^0.1.1",
+    "body-parser": "^1.18.2",
+    "date-fns": "^1.29.0",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "express-graphql": "^0.6.11",
+    "graphql": "^0.12.3",
+    "graphql-extensions": "^0.0.5",
+    "graphql-tools": "^2.15.0",
+    "node-fetch": "^1.7.3",
+    "webtask-tools": "^3.2.0",
+    "xml2js": "^0.4.19"
+  },
+  "lint-staged": {
+    "*.{js,md,json}": ["prettier --write", "git add"]
+  }
+}
