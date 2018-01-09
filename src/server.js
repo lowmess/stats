@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express'
 import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
@@ -9,6 +10,7 @@ import * as Schema from './schema'
 
 const PORT = 3000
 const server = express()
+server.use(cors())
 
 if (typeof process.env.GITHUB_KEY === 'undefined') {
   console.warn(
