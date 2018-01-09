@@ -43,6 +43,14 @@
     "xml2js": "^0.4.19"
   },
   "lint-staged": {
-    "*.{js,md,json}": ["prettier --write", "git add"]
+    "*.js": [
+      "eslint --fix",
+      "prettier --write",
+      "git add"
+    ],
+    "*.{md,json}": [
+      "prettier --write",
+      "git add"
+    ]
   }
 }
