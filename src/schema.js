@@ -92,24 +92,34 @@ const resolvers = {
       })
         .then(res => res.json())
         .then(json => {
-          let commits = 0
-          json.data.viewer.repositories.nodes.forEach(node => {
-            if (node.ref) {
-              node.ref.target.history.edges.forEach(edge => {
-                if (edge.node.author.name === context.secrets.GITHUB_NAME)
-                  commits++
-              })
-            }
-          })
-          json.data.viewer.repositoriesContributedTo.nodes.forEach(node => {
-            if (node.ref) {
-              node.ref.target.history.edges.forEach(edge => {
-                if (edge.node.author.name === context.secrets.GITHUB_NAME)
-                  commits++
-              })
-            }
-          })
-          return commits
+          if (json.data.viewer) {
+            let commits = 0
+            json.data.viewer.repositories.nodes.forEach(node => {
+              if (node.ref) {
+                node.ref.target.history.edges.forEach(edge => {
+                  if (edge.node.author.name === context.secrets.GITHUB_NAME) {
+                    commits++
+                  }
+                })
+              }
+            })
+            json.data.viewer.repositoriesContributedTo.nodes.forEach(node => {
+              if (node.ref) {
+                node.ref.target.history.edges.forEach(edge => {
+                  if (edge.node.author.name === context.secrets.GITHUB_NAME) {
+                    commits++
+                  }
+                })
+              }
+            })
+            return commits
+          } else {
+            return null
+          }
+        })
+        .catch(err => {
+          console.error(err)
+          return null
         })
     },
 
@@ -122,10 +132,18 @@ const resolvers = {
       )
         .then(res => res.json())
         .then(json => {
-          return {
-            name: json.topalbums.album[0].name,
-            artist: json.topalbums.album[0].artist.name,
+          if (json.topalbums) {
+            return {
+              name: json.topalbums.album[0].name,
+              artist: json.topalbums.album[0].artist.name,
+            }
+          } else {
+            return { name: null, artist: null }
           }
+        })
+        .catch(err => {
+          console.error(err)
+          return { name: null, artist: null }
         })
     },
     songs: (root, args, context) => {
@@ -136,7 +154,15 @@ const resolvers = {
       )
         .then(res => res.json())
         .then(json => {
-          return json.toptracks['@attr'].total
+          if (json.toptracks) {
+            return json.toptracks['@attr'].total
+          } else {
+            return null
+          }
+        })
+        .catch(err => {
+          console.error(err)
+          return null
         })
     },
 
@@ -152,11 +178,19 @@ const resolvers = {
       )
         .then(res => res.json())
         .then(json => {
-          let steps = 0
-          json['activities-steps'].forEach(activity => {
-            steps += parseInt(activity.value, 10)
-          })
-          return steps
+          if (json['activities-steps']) {
+            let steps = 0
+            json['activities-steps'].forEach(activity => {
+              steps += parseInt(activity.value, 10)
+            })
+            return steps
+          } else {
+            return null
+          }
+        })
+        .catch(err => {
+          console.error(err)
+          return null
         })
     },
 
@@ -171,13 +205,22 @@ const resolvers = {
         .then(text => {
           let name, author
           xml2js.parseString(text, { normalizeTags: true }, (err, result) => {
-            name =
-              result.goodreadsresponse.reviews[0].review[0].book[0].title[0]
-            author =
-              result.goodreadsresponse.reviews[0].review[0].book[0].authors[0]
-                .author[0].name[0]
+            if (result.goodreadsresponse) {
+              name =
+                result.goodreadsresponse.reviews[0].review[0].book[0].title[0]
+              author =
+                result.goodreadsresponse.reviews[0].review[0].book[0].authors[0]
+                  .author[0].name[0]
+            } else {
+              name = null
+              author = null
+            }
           })
           return { name, author }
+        })
+        .catch(err => {
+          console.error(err)
+          return { name: null, author: null }
         })
     },
   },
