@@ -5,7 +5,8 @@
   "main": "./src/server.js",
   "scripts": {
     "start": "nodemon ./src/server.js --exec babel-node -e js",
-    "precommit": "lint-staged"
+    "precommit": "lint-staged",
+    "deploy": "now -e GITHUB_KEY=@github_key -e GITHUB_NAME=@github_name -e LASTFM_KEY=@lastfm_key -e FITBIT_KEY=@fitbit_key -e GOODREADS_KEY=@goodreads_key -e GOODREADS_ID=@goodreads_id"
   },
   "repository": {
     "type": "git",
