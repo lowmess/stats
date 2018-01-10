@@ -15,13 +15,15 @@ npm start
 
 ### App secrets
 
-This pad contains some secret keys which you will need to provide as environment variables. Use `dotenv` to do that.
+This pad contains some secret keys which you will need to provide as environment variables. Use `dotenv` to do that in development, and `now` secrets to do it in production.
 
 Here's the keys you need:
 
+* `APOLLO_KEY`
 * `GITHUB_KEY`
+* `GITHUB_NAME`
 * `LASTFM_KEY`
 * `FITBIT_KEY`
 * `GOODREADS_KEY`
 * `GOODREADS_ID`
-* `GITHUB_NAME`
+* `FOURSQUARE_KEY`

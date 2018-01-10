@@ -5,40 +5,25 @@ import { Engine } from 'apollo-engine'
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express'
 import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
-
-dotenv.config()
-
 import * as Schema from './schema'
 
-const PORT = 3000
-const server = express()
+// Get secrets from ./.env
+dotenv.config()
 
-const engine = new Engine({
-  engineConfig: {
-    apiKey: process.env.APOLLO_KEY,
-    stores: [
-      {
-        name: 'publicResponseCache',
-        inMemory: {
-          cacheSize: 10485760,
-        },
-      },
-    ],
-    queryCache: {
-      publicFullQueryStore: 'publicResponseCache',
-    },
-  },
-  graphqlPort: process.env.PORT || PORT,
-})
-
-engine.start()
-server.use(cors())
-server.use(compression())
-server.use(engine.expressMiddleware())
-
+// Check for secrets
+if (typeof process.env.APOLLO_KEY === 'undefined') {
+  console.warn(
+    'WARNING: process.env.APOLLO_KEY is not defined. Check README.md for more information'
+  )
+}
 if (typeof process.env.GITHUB_KEY === 'undefined') {
   console.warn(
     'WARNING: process.env.GITHUB_KEY is not defined. Check README.md for more information'
+  )
+}
+if (typeof process.env.GITHUB_NAME === 'undefined') {
+  console.warn(
+    'WARNING: process.env.GITHUB_NAME is not defined. Check README.md for more information'
   )
 }
 if (typeof process.env.LASTFM_KEY === 'undefined') {
@@ -61,12 +46,40 @@ if (typeof process.env.GOODREADS_ID === 'undefined') {
     'WARNING: process.env.GOODREADS_ID is not defined. Check README.md for more information'
   )
 }
-if (typeof process.env.GITHUB_NAME === 'undefined') {
+if (typeof process.env.FOURSQUARE_KEY === 'undefined') {
   console.warn(
-    'WARNING: process.env.GITHUB_NAME is not defined. Check README.md for more information'
+    'WARNING: process.env.FOURSQUARE_KEY is not defined. Check README.md for more information'
   )
 }
 
+// Basic Express Setup
+const PORT = process.env.PORT || 3000
+const server = express()
+server.use(cors())
+server.use(compression())
+
+// Apollo Engine
+const engine = new Engine({
+  engineConfig: {
+    apiKey: process.env.APOLLO_KEY,
+    stores: [
+      {
+        name: 'publicResponseCache',
+        inMemory: {
+          cacheSize: 10485760,
+        },
+      },
+    ],
+    queryCache: {
+      publicFullQueryStore: 'publicResponseCache',
+    },
+  },
+  graphqlPort: PORT,
+})
+engine.start()
+server.use(engine.expressMiddleware())
+
+// Apollo schema, secrets, etc
 const schemaFunction =
   Schema.schemaFunction ||
   function() {
@@ -89,6 +102,7 @@ const contextFunction =
     )
   }
 
+// GraphQL middleware
 server.use(
   '/graphql',
   bodyParser.json(),
@@ -109,6 +123,7 @@ server.use(
   })
 )
 
+// Add GraphiQL UI
 server.use(
   '/graphiql',
   graphiqlExpress({
@@ -117,6 +132,7 @@ server.use(
   })
 )
 
+// Start server
 server.listen(PORT, () => {
   console.log(
     `GraphQL Server is now running on http://localhost:${PORT}/graphql`

@@ -7,7 +7,7 @@ import fetch from 'node-fetch'
 import xml2js from 'xml2js'
 
 // get Date object for the day that was 30 days ago
-const date = subDays(Date.now(), 30)
+const thirtyDaysAgo = subDays(Date.now(), 30)
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = `
@@ -80,7 +80,7 @@ const resolvers = {
             }
           }
         }`
-      const variables = { date: date.toISOString() }
+      const variables = { date: thirtyDaysAgo.toISOString() }
       return fetch(`https://api.github.com/graphql`, {
         method: 'POST',
         body: JSON.stringify({
@@ -123,11 +123,12 @@ const resolvers = {
           return { amount: null }
         })
     },
-
     // Foursquare places
     places: (root, args, context) => {
       return fetch(
-        'https://api.foursquare.com/v2/users/self/checkins?oauth_token=FPGETRJR32KGJGSC3ZQG5W5XEC2MUP0Y1CPKXFUO12T54CHM&afterTimestamp=1512864000000&v=20180109'
+        `https://api.foursquare.com/v2/users/self/checkins?oauth_token=${
+          context.secrets.FOURSQUARE_KEY
+        }&afterTimestamp=${thirtyDaysAgo.getTime()}&v=20180109`
       )
         .then(res => res.json())
         .then(json => {
@@ -142,7 +143,6 @@ const resolvers = {
           return null
         })
     },
-
     // FitBit steps & hours slept
     steps: (root, args, context) => {
       return fetch(
@@ -172,7 +172,7 @@ const resolvers = {
     sleep: (root, args, context) => {
       return fetch(
         `https://api.fitbit.com/1.2/user/-/sleep/date/${format(
-          date,
+          thirtyDaysAgo,
           'YYYY-MM-DD'
         )}/${format(Date.now(), 'YYYY-MM-DD')}.json`,
         {
@@ -197,7 +197,6 @@ const resolvers = {
           return null
         })
     },
-
     // Last.fm top album & total songs
     songs: (root, args, context) => {
       return fetch(
@@ -242,7 +241,6 @@ const resolvers = {
           return { name: null, artist: null }
         })
     },
-
     // Goodreads book
     book: (root, args, context) => {
       return fetch(
