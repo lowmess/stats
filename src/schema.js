@@ -22,11 +22,11 @@ const typeDefs = `
   }
 
   type Query {
-    commits: Int,
-    steps: Int,
-    album: Album,
-    songs: Int,
-    book: Book
+    commits: Int @cacheControl(maxAge:3600),
+    steps: Int @cacheControl(maxAge:3600),
+    songs: Int @cacheControl(maxAge:3600),
+    album: Album @cacheControl(maxAge:3600),
+    book: Book @cacheControl(maxAge:86400)
   }
 `
 
@@ -92,13 +92,14 @@ const resolvers = {
       })
         .then(res => res.json())
         .then(json => {
+          let amount = null
           if (json.data.viewer) {
-            let commits = 0
+            amount = 0
             json.data.viewer.repositories.nodes.forEach(node => {
               if (node.ref) {
                 node.ref.target.history.edges.forEach(edge => {
                   if (edge.node.author.name === context.secrets.GITHUB_NAME) {
-                    commits++
+                    amount++
                   }
                 })
               }
@@ -107,15 +108,40 @@ const resolvers = {
               if (node.ref) {
                 node.ref.target.history.edges.forEach(edge => {
                   if (edge.node.author.name === context.secrets.GITHUB_NAME) {
-                    commits++
+                    amount++
                   }
                 })
               }
             })
-            return commits
-          } else {
-            return null
           }
+          return amount
+        })
+        .catch(err => {
+          console.error(err)
+          return { amount: null }
+        })
+    },
+
+    // FitBit steps
+    steps: (root, args, context) => {
+      return fetch(
+        'https://api.fitbit.com/1/user/-/activities/steps/date/today/30d.json',
+        {
+          headers: {
+            Authorization: `Bearer ${context.secrets.FITBIT_KEY}`,
+          },
+        }
+      )
+        .then(res => res.json())
+        .then(json => {
+          let amount = null
+          if (json['activities-steps']) {
+            amount = 0
+            json['activities-steps'].forEach(activity => {
+              amount += parseInt(activity.value, 10)
+            })
+          }
+          return amount
         })
         .catch(err => {
           console.error(err)
@@ -124,6 +150,27 @@ const resolvers = {
     },
 
     // Last.fm top album & total songs
+    songs: (root, args, context) => {
+      return fetch(
+        `http://ws.audioscrobbler.com/2.0/?method=user.gettoptracks&limit=1&user=lowmess&period=1month&api_key=${
+          context.secrets.LASTFM_KEY
+        }&format=json`
+      )
+        .then(res => res.json())
+        .then(json => {
+          let amount
+          if (json.toptracks) {
+            amount = json.toptracks['@attr'].total
+          } else {
+            amount = null
+          }
+          return amount
+        })
+        .catch(err => {
+          console.error(err)
+          return null
+        })
+    },
     album: (root, args, context) => {
       return fetch(
         `http://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&limit=1&user=lowmess&period=1month&api_key=${
@@ -144,53 +191,6 @@ const resolvers = {
         .catch(err => {
           console.error(err)
           return { name: null, artist: null }
-        })
-    },
-    songs: (root, args, context) => {
-      return fetch(
-        `http://ws.audioscrobbler.com/2.0/?method=user.gettoptracks&limit=1&user=lowmess&period=1month&api_key=${
-          context.secrets.LASTFM_KEY
-        }&format=json`
-      )
-        .then(res => res.json())
-        .then(json => {
-          if (json.toptracks) {
-            return json.toptracks['@attr'].total
-          } else {
-            return null
-          }
-        })
-        .catch(err => {
-          console.error(err)
-          return null
-        })
-    },
-
-    // FitBit steps
-    steps: (root, args, context) => {
-      return fetch(
-        'https://api.fitbit.com/1/user/-/activities/steps/date/today/30d.json',
-        {
-          headers: {
-            Authorization: `Bearer ${context.secrets.FITBIT_KEY}`,
-          },
-        }
-      )
-        .then(res => res.json())
-        .then(json => {
-          if (json['activities-steps']) {
-            let steps = 0
-            json['activities-steps'].forEach(activity => {
-              steps += parseInt(activity.value, 10)
-            })
-            return steps
-          } else {
-            return null
-          }
-        })
-        .catch(err => {
-          console.error(err)
-          return null
         })
     },
 

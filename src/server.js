@@ -1,5 +1,7 @@
 import express from 'express'
 import cors from 'cors'
+import compression from 'compression'
+import { Engine } from 'apollo-engine'
 import { graphqlExpress, graphiqlExpress } from 'apollo-server-express'
 import bodyParser from 'body-parser'
 import dotenv from 'dotenv'
@@ -10,7 +12,29 @@ import * as Schema from './schema'
 
 const PORT = 3000
 const server = express()
+
+const engine = new Engine({
+  engineConfig: {
+    apiKey: process.env.APOLLO_KEY,
+    stores: [
+      {
+        name: 'publicResponseCache',
+        inMemory: {
+          cacheSize: 10485760,
+        },
+      },
+    ],
+    queryCache: {
+      publicFullQueryStore: 'publicResponseCache',
+    },
+  },
+  graphqlPort: process.env.PORT || PORT,
+})
+
+engine.start()
 server.use(cors())
+server.use(compression())
+server.use(engine.expressMiddleware())
 
 if (typeof process.env.GITHUB_KEY === 'undefined') {
   console.warn(
@@ -80,6 +104,7 @@ server.use(
       rootValue,
       context,
       tracing: true,
+      cacheControl: true,
     }
   })
 )
