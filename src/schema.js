@@ -2,12 +2,12 @@
 // https://launchpad.graphql.com/37p7j0nxlv
 
 import { makeExecutableSchema } from 'graphql-tools'
-import { subDays } from 'date-fns'
+import { format, subDays } from 'date-fns'
 import fetch from 'node-fetch'
 import xml2js from 'xml2js'
 
 // get Date object for the day that was 30 days ago
-const date = subDays(new Date(), 30)
+const date = subDays(Date.now(), 30)
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = `
@@ -23,7 +23,9 @@ const typeDefs = `
 
   type Query {
     commits: Int @cacheControl(maxAge:3600),
+    places: Int @cacheControl(maxAge:86400),
     steps: Int @cacheControl(maxAge:3600),
+    sleep: Float @cacheControl(maxAge:86400),
     songs: Int @cacheControl(maxAge:3600),
     album: Album @cacheControl(maxAge:3600),
     book: Book @cacheControl(maxAge:86400)
@@ -122,7 +124,26 @@ const resolvers = {
         })
     },
 
-    // FitBit steps
+    // Foursquare places
+    places: (root, args, context) => {
+      return fetch(
+        'https://api.foursquare.com/v2/users/self/checkins?oauth_token=FPGETRJR32KGJGSC3ZQG5W5XEC2MUP0Y1CPKXFUO12T54CHM&afterTimestamp=1512864000000&v=20180109'
+      )
+        .then(res => res.json())
+        .then(json => {
+          let places = null
+          if (json.response.checkins) {
+            places = json.response.checkins.items.length
+          }
+          return places
+        })
+        .catch(err => {
+          console.error(err)
+          return null
+        })
+    },
+
+    // FitBit steps & hours slept
     steps: (root, args, context) => {
       return fetch(
         'https://api.fitbit.com/1/user/-/activities/steps/date/today/30d.json',
@@ -142,6 +163,34 @@ const resolvers = {
             })
           }
           return amount
+        })
+        .catch(err => {
+          console.error(err)
+          return null
+        })
+    },
+    sleep: (root, args, context) => {
+      return fetch(
+        `https://api.fitbit.com/1.2/user/-/sleep/date/${format(
+          date,
+          'YYYY-MM-DD'
+        )}/${format(Date.now(), 'YYYY-MM-DD')}.json`,
+        {
+          headers: {
+            Authorization: `Bearer ${context.secrets.FITBIT_KEY}`,
+          },
+        }
+      )
+        .then(res => res.json())
+        .then(json => {
+          let duration = null
+          if (json.sleep) {
+            duration = 0
+            json.sleep.forEach(night => {
+              duration += night.duration / 1000 / 60 / 60
+            })
+          }
+          return duration
         })
         .catch(err => {
           console.error(err)
