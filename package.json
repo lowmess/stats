@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon ./src/server.js --exec babel-node -e js",
     "precommit": "lint-staged",
-    "deploy": "now -e APOLLO_KEY=@apollo_key -e GITHUB_KEY=@github_key -e GITHUB_NAME=@github_name -e LASTFM_KEY=@lastfm_key -e FITBIT_KEY=@fitbit_key -e GOODREADS_KEY=@goodreads_key -e GOODREADS_ID=@goodreads_id"
+    "deploy": "now -e APOLLO_KEY=@apollo_key -e GITHUB_KEY=@github_key -e GITHUB_NAME=@github_name -e LASTFM_KEY=@lastfm_key -e FITBIT_KEY=@fitbit_key -e GOODREADS_KEY=@goodreads_key -e GOODREADS_ID=@goodreads_id --public"
   },
   "repository": {
     "type": "git",
