@@ -127,7 +127,9 @@ const resolvers = {
       return fetch(
         `https://api.foursquare.com/v2/users/self/checkins?oauth_token=${
           context.secrets.FOURSQUARE_KEY
-        }&afterTimestamp=${thirtyDaysAgo.getTime()}&v=20180109`
+        }&limit=250&afterTimestamp=${Math.floor(
+          thirtyDaysAgo.getTime() / 1000
+        )}&v=20180101&limit=250`
       )
         .then(res => res.json())
         .then(json => {
