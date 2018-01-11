@@ -16,14 +16,19 @@ if (typeof process.env.GITHUB_KEY === 'undefined') {
     'WARNING: process.env.GITHUB_KEY is not defined. Check README.md for more information'
   )
 }
-if (typeof process.env.GITHUB_NAME === 'undefined') {
+if (typeof process.env.GITHUB_ID === 'undefined') {
   console.warn(
-    'WARNING: process.env.GITHUB_NAME is not defined. Check README.md for more information'
+    'WARNING: process.env.GITHUB_ID is not defined. Check README.md for more information'
   )
 }
 if (typeof process.env.LASTFM_KEY === 'undefined') {
   console.warn(
     'WARNING: process.env.LASTFM_KEY is not defined. Check README.md for more information'
+  )
+}
+if (typeof process.env.LASTFM_USERNAME === 'undefined') {
+  console.warn(
+    'WARNING: process.env.LASTFM_USERNAME is not defined. Check README.md for more information'
   )
 }
 if (typeof process.env.FITBIT_KEY === 'undefined') {
