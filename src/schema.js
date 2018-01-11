@@ -38,19 +38,17 @@ const resolvers = {
     // GitHub Commits
     commits: (root, args, context) => {
       const query = `
-        query recentCommits($date: GitTimestamp) {
+        query recentCommits($date: GitTimestamp, $author: CommitAuthor) {
           viewer {
             repositories(first: 100) {
               nodes {
                 ref(qualifiedName: "master") {
                   target {
                     ... on Commit {
-                      history(since:$date, first: 100) {
+                      history(since:$date, first: 100, author:$author) {
                         edges {
                           node {
-                            author {
-                              name
-                            }
+                            id
                           }
                         }
                       }
@@ -64,12 +62,10 @@ const resolvers = {
                 ref(qualifiedName: "master") {
                   target {
                     ... on Commit {
-                      history(since:$date, first: 100) {
+                      history(since:$date, first: 100, author:$author) {
                         edges {
                           node {
-                            author {
-                              name
-                            }
+                            id
                           }
                         }
                       }
@@ -80,7 +76,10 @@ const resolvers = {
             }
           }
         }`
-      const variables = { date: thirtyDaysAgo.toISOString() }
+      const variables = {
+        date: thirtyDaysAgo.toISOString(),
+        author: { id: context.secrets.GITHUB_ID },
+      }
       return fetch(`https://api.github.com/graphql`, {
         method: 'POST',
         body: JSON.stringify({
@@ -100,7 +99,7 @@ const resolvers = {
             json.data.viewer.repositories.nodes.forEach(node => {
               if (node.ref) {
                 node.ref.target.history.edges.forEach(edge => {
-                  if (edge.node.author.name === context.secrets.GITHUB_NAME) {
+                  if (edge.node.id) {
                     amount++
                   }
                 })
@@ -109,7 +108,7 @@ const resolvers = {
             json.data.viewer.repositoriesContributedTo.nodes.forEach(node => {
               if (node.ref) {
                 node.ref.target.history.edges.forEach(edge => {
-                  if (edge.node.author.name === context.secrets.GITHUB_NAME) {
+                  if (edge.node.id) {
                     amount++
                   }
                 })
