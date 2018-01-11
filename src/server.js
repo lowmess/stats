@@ -11,11 +11,6 @@ import * as Schema from './schema'
 dotenv.config()
 
 // Check for secrets
-if (typeof process.env.APOLLO_KEY === 'undefined') {
-  console.warn(
-    'WARNING: process.env.APOLLO_KEY is not defined. Check README.md for more information'
-  )
-}
 if (typeof process.env.GITHUB_KEY === 'undefined') {
   console.warn(
     'WARNING: process.env.GITHUB_KEY is not defined. Check README.md for more information'
@@ -59,25 +54,27 @@ server.use(cors())
 server.use(compression())
 
 // Apollo Engine
-const engine = new Engine({
-  engineConfig: {
-    apiKey: process.env.APOLLO_KEY,
-    stores: [
-      {
-        name: 'publicResponseCache',
-        inMemory: {
-          cacheSize: 10485760,
+if (process.env.APOLLO_KEY) {
+  const engine = new Engine({
+    engineConfig: {
+      apiKey: process.env.APOLLO_KEY,
+      stores: [
+        {
+          name: 'publicResponseCache',
+          inMemory: {
+            cacheSize: 10485760,
+          },
         },
+      ],
+      queryCache: {
+        publicFullQueryStore: 'publicResponseCache',
       },
-    ],
-    queryCache: {
-      publicFullQueryStore: 'publicResponseCache',
     },
-  },
-  graphqlPort: PORT,
-})
-engine.start()
-server.use(engine.expressMiddleware())
+    graphqlPort: PORT,
+  })
+  engine.start()
+  server.use(engine.expressMiddleware())
+}
 
 // Apollo schema, secrets, etc
 const schemaFunction =

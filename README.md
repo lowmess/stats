@@ -19,7 +19,7 @@ This pad contains some secret keys which you will need to provide as environment
 
 Here's the keys you need:
 
-* `APOLLO_KEY` - Apollo Engine API key
+* `APOLLO_KEY` (optional) - Apollo Engine API key
 * `GITHUB_KEY` - GitHub personal access token
 * `GITHUB_ID` - GitHub user ID to find commits for
 * `LASTFM_KEY` - Last.fm oauth token
