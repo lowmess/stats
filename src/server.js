@@ -1,3 +1,4 @@
+import path from 'path'
 import express from 'express'
 import cors from 'cors'
 import compression from 'compression'
@@ -133,6 +134,12 @@ server.use(
     query: ``,
   })
 )
+
+// Serve static content and homepage
+server.use(express.static('public'))
+server.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../', '/index.html'))
+})
 
 // Start server
 server.listen(PORT, () => {

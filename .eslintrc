@@ -1,7 +1,8 @@
 {
   "extends": "lowmess",
   "env": {
-    "node": true
+    "node": true,
+    "browser": true
   },
   "parser": "babel-eslint",
   "parserOptions": {
