@@ -19,11 +19,12 @@ This pad contains some secret keys which you will need to provide as environment
 
 Here's the keys you need:
 
-* `APOLLO_KEY`
-* `GITHUB_KEY`
-* `GITHUB_NAME`
-* `LASTFM_KEY`
-* `FITBIT_KEY`
-* `GOODREADS_KEY`
-* `GOODREADS_ID`
-* `FOURSQUARE_KEY`
+* `APOLLO_KEY` - Apollo Engine API key
+* `GITHUB_KEY` - GitHub personal access token
+* `GITHUB_ID` - GitHub user ID to find commits for
+* `LASTFM_KEY` - Last.fm oauth token
+* `LASTFM_USERNAME` - Last.fm username to look up
+* `FITBIT_KEY` - Fitbit oauth token
+* `GOODREADS_KEY` - Goodreads API key
+* `GOODREADS_ID` - Goodreads user id to look up
+* `FOURSQUARE_KEY` - Foursquare oauth token
