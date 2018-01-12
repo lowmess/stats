@@ -138,7 +138,7 @@ server.use(
 // Serve static content and homepage
 server.use(express.static('public'))
 server.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../', '/index.html'))
+  res.sendFile(path.join(__dirname, '/index.html'))
 })
 
 // Start server
