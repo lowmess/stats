@@ -6,9 +6,6 @@ import { format, subDays } from 'date-fns'
 import fetch from 'node-fetch'
 import xml2js from 'xml2js'
 
-// get Date object for the day that was 30 days ago
-const thirtyDaysAgo = subDays(Date.now(), 30)
-
 // Construct a schema, using GraphQL schema language
 const typeDefs = `
   type Album {
@@ -77,7 +74,7 @@ const resolvers = {
           }
         }`
       const variables = {
-        date: thirtyDaysAgo.toISOString(),
+        date: subDays(Date.now(), 30).toISOString(),
         author: { id: context.secrets.GITHUB_ID },
       }
       return fetch(`https://api.github.com/graphql`, {
@@ -128,7 +125,7 @@ const resolvers = {
         `https://api.foursquare.com/v2/users/self/checkins?oauth_token=${
           context.secrets.FOURSQUARE_KEY
         }&limit=250&afterTimestamp=${Math.floor(
-          thirtyDaysAgo.getTime() / 1000
+          subDays(Date.now(), 30).getTime() / 1000
         )}&v=20180101&limit=250`
       )
         .then(res => res.json())
@@ -173,7 +170,7 @@ const resolvers = {
     sleep: (root, args, context) => {
       return fetch(
         `https://api.fitbit.com/1.2/user/-/sleep/date/${format(
-          thirtyDaysAgo,
+          subDays(Date.now(), 30),
           'YYYY-MM-DD'
         )}/${format(Date.now(), 'YYYY-MM-DD')}.json`,
         {
