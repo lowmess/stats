@@ -201,15 +201,17 @@ const resolvers = {
     // Last.fm top album & total songs
     songs: (root, args, context) => {
       return fetch(
-        `https://ws.audioscrobbler.com/2.0/?method=user.gettoptracks&limit=1&user=${
+        `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&limit=1&user=${
           context.secrets.LASTFM_USERNAME
-        }&period=1month&api_key=${context.secrets.LASTFM_KEY}&format=json`
+        }&from=${Math.floor(thirtyDaysAgo().getTime() / 1000)}&api_key=${
+          context.secrets.LASTFM_KEY
+        }&format=json`
       )
         .then(res => res.json())
         .then(json => {
           let amount = null
-          if (json.toptracks) {
-            amount = json.toptracks['@attr'].total
+          if (json.recenttracks) {
+            amount = json.recenttracks['@attr'].total
           }
           return amount
         })
