@@ -94,7 +94,7 @@ const resolvers = {
         .then(res => res.json())
         .then(json => {
           let amount = null
-          if (json.data.viewer) {
+          if (json.data) {
             amount = 0
             json.data.viewer.repositories.nodes.forEach(node => {
               if (node.ref) {
@@ -134,7 +134,7 @@ const resolvers = {
         .then(res => res.json())
         .then(json => {
           let places = null
-          if (json.response.checkins) {
+          if (json.response && Object.keys(json.response).length !== 0) {
             places = json.response.checkins.items.length
           }
           return places
