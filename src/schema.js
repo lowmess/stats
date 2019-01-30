@@ -203,9 +203,9 @@ const resolvers = {
       return fetch(
         `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&limit=1&user=${
           context.secrets.LASTFM_USERNAME
-        }&from=${Math.floor(thirtyDaysAgo().getTime() / 1000)}&api_key=${
-          context.secrets.LASTFM_KEY
-        }&format=json`
+        }&from=${Math.floor(thirtyDaysAgo().getTime() / 1000)}&to=${Math.floor(
+          Date.now() / 1000
+        )}&api_key=${context.secrets.LASTFM_KEY}&format=json`
       )
         .then(res => res.json())
         .then(json => {
