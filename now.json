@@ -26,6 +26,7 @@
   ],
   "env": {
     "PRODUCTION": "PRODUCTION",
+    "ENGINE_API_KEY": "@apollo_key",
     "GITHUB_KEY": "@github_key",
     "GITHUB_ID": "@github_id",
     "LASTFM_KEY": "@lastfm_key",
