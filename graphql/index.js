@@ -47,7 +47,7 @@ if (typeof process.env.FOURSQUARE_KEY === 'undefined') {
 
 // Set up Express
 const app = express()
-app.use(cors({ origin: [/lowmess\.com$/] }))
+app.use(cors({ origin: [/lowmess\.com$/, /localhost/] }))
 
 const server = new ApolloServer({ typeDefs, resolvers })
 server.applyMiddleware({ app })
