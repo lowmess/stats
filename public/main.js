@@ -2,6 +2,24 @@ const stat = (selector, value) => {
   document.querySelector(`[data-stat=${selector}]`).innerHTML = value
 }
 
+const markupBook = ({ name, author }) => `
+  <div class="mb2">
+    <span class="f5 f4-ns monospace"><em>${name}</em>, ${author}</span>
+  </div>
+`
+
+const fillBooks = books => {
+  const container = document.querySelector('[data-books-container]')
+  container.innerHTML = ''
+
+  books.forEach(book => {
+    const html = markupBook(book)
+    const template = document.createElement('template')
+    template.innerHTML = html
+    container.appendChild(template.content.firstElementChild)
+  })
+}
+
 const query = `
   query LocalQuery {
     commits
@@ -13,7 +31,7 @@ const query = `
       name
       artist
     }
-    book {
+    books {
       name
       author
     }
@@ -51,13 +69,8 @@ fetch('/graphql', {
         }
       }
       // Book
-      if (json.data.book) {
-        if (json.data.book.name && json.data.book.author) {
-          stat(
-            'book',
-            `<em>${json.data.book.name}</em>, ${json.data.book.author}`
-          )
-        }
+      if (json.data.books) {
+        fillBooks(json.data.books)
       }
     }
   })

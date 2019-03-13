@@ -28,7 +28,7 @@ const typeDefs = `
     sleep: Float @cacheControl(maxAge:86400),
     songs: Int @cacheControl(maxAge:3600),
     album: Album @cacheControl(maxAge:3600),
-    book: Book @cacheControl(maxAge:86400)
+    books: [Book] @cacheControl(maxAge:86400)
   }
 `
 
@@ -243,7 +243,7 @@ const resolvers = {
         })
     },
     // Goodreads book
-    book: (root, args, context) => {
+    books: (root, args, context) => {
       return fetch(
         `https://www.goodreads.com/review/list?v=2&id=${
           context.secrets.GOODREADS_ID
@@ -251,20 +251,17 @@ const resolvers = {
       )
         .then(res => res.text())
         .then(text => {
-          let name, author
+          const books = []
           xml2js.parseString(text, { normalizeTags: true }, (err, result) => {
             if (result.goodreadsresponse) {
-              name =
-                result.goodreadsresponse.reviews[0].review[0].book[0].title[0]
-              author =
-                result.goodreadsresponse.reviews[0].review[0].book[0].authors[0]
-                  .author[0].name[0]
-            } else {
-              name = null
-              author = null
+              result.goodreadsresponse.reviews[0].review.forEach(book => {
+                const name = book.book[0].title[0]
+                const author = book.book[0].authors[0].author[0].name[0]
+                books.push({ name, author })
+              })
             }
           })
-          return { name, author }
+          return books
         })
         .catch(err => {
           console.error(err)
