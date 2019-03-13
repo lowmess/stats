@@ -25,6 +25,7 @@
     }
   ],
   "env": {
+    "PRODUCTION": true,
     "GITHUB_KEY": "@github_key",
     "GITHUB_ID": "@github_id",
     "LASTFM_KEY": "@lastfm_key",

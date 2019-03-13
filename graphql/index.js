@@ -1,6 +1,11 @@
 const express = require('express')
 const { ApolloServer } = require('apollo-server-express')
 const { typeDefs, resolvers } = require('./schema')
+const dotenv = require('dotenv')
+
+if (!process.env.PRODUCTION) {
+  dotenv.config()
+}
 
 // Check for secrets
 if (typeof process.env.GITHUB_KEY === 'undefined') {
