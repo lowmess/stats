@@ -4,7 +4,7 @@
   "alias": ["stats.lowmess.com", "lowmess-stats.now.sh"],
   "builds": [
     {
-      "src": "graphql/*.js",
+      "src": "graphql/index.js",
       "use": "@now/node"
     },
     {
@@ -25,7 +25,7 @@
     }
   ],
   "env": {
-    "PRODUCTION": true,
+    "PRODUCTION": "PRODUCTION",
     "GITHUB_KEY": "@github_key",
     "GITHUB_ID": "@github_id",
     "LASTFM_KEY": "@lastfm_key",
