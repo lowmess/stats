@@ -1,10 +1,12 @@
+/* eslint-disable no-shadow */
+
 // Created with Apollo Launchpad
 // https://launchpad.graphql.com/37p7j0nxlv
 
-import { makeExecutableSchema } from 'graphql-tools'
-import { format, subDays } from 'date-fns'
-import fetch from 'node-fetch'
-import xml2js from 'xml2js'
+const { makeExecutableSchema } = require('graphql-tools')
+const { format, subDays } = require('date-fns')
+const fetch = require('node-fetch')
+const xml2js = require('xml2js')
 
 // get Date object for the day that was 30 days ago
 const thirtyDaysAgo = () => subDays(Date.now(), 30)
@@ -272,7 +274,7 @@ const resolvers = {
 }
 
 // Required: Export the GraphQL.js schema object as "schema"
-export const schema = makeExecutableSchema({
+const schema = makeExecutableSchema({
   typeDefs,
   resolvers,
 })
@@ -280,7 +282,7 @@ export const schema = makeExecutableSchema({
 // Optional: Export a function to get context from the request. It accepts two
 // parameters - headers (lowercased http headers) and secrets (secrets defined
 // in secrets section). It must return an object (or a promise resolving to it).
-export function context(headers, secrets) {
+function context(headers, secrets) {
   return {
     headers,
     secrets,
@@ -299,3 +301,5 @@ export function context(headers, secrets) {
 //     secrets,
 //   };
 // };
+
+module.exports = { schema, context }

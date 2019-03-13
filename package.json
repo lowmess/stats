@@ -15,23 +15,18 @@
   "author": "Alec Lomas <alec@lowmess.com>",
   "license": "MIT",
   "devDependencies": {
-    "babel-cli": "^6.24.0",
-    "babel-eslint": "^8.2.1",
-    "babel-plugin-transform-async-generator-functions": "^6.24.1",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-preset-latest": "^6.23.0",
-    "eslint": "3.19.0",
-    "eslint-config-lowmess": "1.1.0",
+    "eslint": "^5.15.1",
+    "eslint-config-lowmess": "^2.2.2",
     "husky": "^0.14.3",
     "lint-staged": "^6.0.0",
     "nodemon": "^1.11.0",
-    "prettier": "^1.9.2"
+    "prettier": "^1.16.4"
   },
   "dependencies": {
     "apollo-engine": "^0.5.2",
     "apollo-server-express": "^1.2.0",
     "apollo-tracing": "^0.1.1",
+    "babel-eslint": "^10.0.1",
     "body-parser": "^1.18.2",
     "compression": "^1.7.1",
     "cors": "^2.8.4",

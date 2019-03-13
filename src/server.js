@@ -1,12 +1,12 @@
-import path from 'path'
-import express from 'express'
-import cors from 'cors'
-import compression from 'compression'
-import { Engine } from 'apollo-engine'
-import { graphqlExpress, graphiqlExpress } from 'apollo-server-express'
-import bodyParser from 'body-parser'
-import dotenv from 'dotenv'
-import * as Schema from './schema'
+const path = require('path')
+const express = require('express')
+const cors = require('cors')
+const compression = require('compression')
+const { Engine } = require('apollo-engine')
+const { graphqlExpress, graphiqlExpress } = require('apollo-server-express')
+const bodyParser = require('body-parser')
+const dotenv = require('dotenv')
+const Schema = require('./schema')
 
 // Get secrets from ./.env
 dotenv.config()
