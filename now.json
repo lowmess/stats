@@ -1,0 +1,37 @@
+{
+  "version": 2,
+  "name": "lowmess-stats",
+  "alias": "stats.lowmess.com",
+  "builds": [
+    {
+      "src": "graphql/*.js",
+      "use": "@now/node"
+    },
+    {
+      "src": "public/*",
+      "use": "@now/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/graphql",
+      "headers": { "Cache-Control": "s-maxage=3600" },
+      "dest": "/graphql/index.js"
+    },
+    {
+      "src": "/(.*)",
+      "headers": { "Cache-Control": "s-maxage=86400" },
+      "dest": "/public/$1"
+    }
+  ],
+  "env": {
+    "GITHUB_KEY": "@github_key",
+    "GITHUB_ID": "@github_id",
+    "LASTFM_KEY": "@lastfm_key",
+    "LASTFM_USERNAME": "@lastfm_username",
+    "FITBIT_KEY": "@fitbit_key",
+    "GOODREADS_KEY": "@goodreads_key",
+    "GOODREADS_ID": "@goodreads_id",
+    "FOURSQUARE_KEY": "@foursquare_key"
+  }
+}

@@ -3,7 +3,7 @@
 // Created with Apollo Launchpad
 // https://launchpad.graphql.com/37p7j0nxlv
 
-const { makeExecutableSchema } = require('graphql-tools')
+const { gql } = require('apollo-server-express')
 const { format, subDays } = require('date-fns')
 const fetch = require('node-fetch')
 const xml2js = require('xml2js')
@@ -12,25 +12,25 @@ const xml2js = require('xml2js')
 const thirtyDaysAgo = () => subDays(Date.now(), 30)
 
 // Construct a schema, using GraphQL schema language
-const typeDefs = `
+const typeDefs = gql`
   type Album {
-    name: String,
+    name: String
     artist: String
   }
 
   type Book {
-    name: String,
+    name: String
     author: String
   }
 
   type Query {
-    commits: Int @cacheControl(maxAge:3600),
-    places: Int @cacheControl(maxAge:86400),
-    steps: Int @cacheControl(maxAge:3600),
-    sleep: Float @cacheControl(maxAge:86400),
-    songs: Int @cacheControl(maxAge:3600),
-    album: Album @cacheControl(maxAge:3600),
-    books: [Book] @cacheControl(maxAge:86400)
+    commits: Int @cacheControl(maxAge: 3600)
+    places: Int @cacheControl(maxAge: 86400)
+    steps: Int @cacheControl(maxAge: 3600)
+    sleep: Float @cacheControl(maxAge: 86400)
+    songs: Int @cacheControl(maxAge: 3600)
+    album: Album @cacheControl(maxAge: 3600)
+    books: [Book] @cacheControl(maxAge: 86400)
   }
 `
 
@@ -80,7 +80,7 @@ const resolvers = {
         }`
       const variables = {
         date: thirtyDaysAgo().toISOString(),
-        author: { id: context.secrets.GITHUB_ID },
+        author: { id: process.env.GITHUB_ID },
       }
       return fetch(`https://api.github.com/graphql`, {
         method: 'POST',
@@ -90,7 +90,7 @@ const resolvers = {
         }),
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${context.secrets.GITHUB_KEY}`,
+          Authorization: `Bearer ${process.env.GITHUB_KEY}`,
         },
       })
         .then(res => res.json())
@@ -128,7 +128,7 @@ const resolvers = {
     places: (root, args, context) => {
       return fetch(
         `https://api.foursquare.com/v2/users/self/checkins?oauth_token=${
-          context.secrets.FOURSQUARE_KEY
+          process.env.FOURSQUARE_KEY
         }&limit=250&afterTimestamp=${Math.floor(
           thirtyDaysAgo().getTime() / 1000
         )}&v=20180101&limit=250`
@@ -152,7 +152,7 @@ const resolvers = {
         'https://api.fitbit.com/1/user/-/activities/steps/date/today/30d.json',
         {
           headers: {
-            Authorization: `Bearer ${context.secrets.FITBIT_KEY}`,
+            Authorization: `Bearer ${process.env.FITBIT_KEY}`,
           },
         }
       )
@@ -180,7 +180,7 @@ const resolvers = {
         )}/${format(Date.now(), 'YYYY-MM-DD')}.json`,
         {
           headers: {
-            Authorization: `Bearer ${context.secrets.FITBIT_KEY}`,
+            Authorization: `Bearer ${process.env.FITBIT_KEY}`,
           },
         }
       )
@@ -204,10 +204,10 @@ const resolvers = {
     songs: (root, args, context) => {
       return fetch(
         `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&limit=1&user=${
-          context.secrets.LASTFM_USERNAME
+          process.env.LASTFM_USERNAME
         }&from=${Math.floor(thirtyDaysAgo().getTime() / 1000)}&to=${Math.floor(
           Date.now() / 1000
-        )}&api_key=${context.secrets.LASTFM_KEY}&format=json`
+        )}&api_key=${process.env.LASTFM_KEY}&format=json`
       )
         .then(res => res.json())
         .then(json => {
@@ -225,8 +225,8 @@ const resolvers = {
     album: (root, args, context) => {
       return fetch(
         `https://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&limit=1&user=${
-          context.secrets.LASTFM_USERNAME
-        }&period=1month&api_key=${context.secrets.LASTFM_KEY}&format=json`
+          process.env.LASTFM_USERNAME
+        }&period=1month&api_key=${process.env.LASTFM_KEY}&format=json`
       )
         .then(res => res.json())
         .then(json => {
@@ -248,8 +248,8 @@ const resolvers = {
     books: (root, args, context) => {
       return fetch(
         `https://www.goodreads.com/review/list?v=2&id=${
-          context.secrets.GOODREADS_ID
-        }&shelf=currently-reading&key=${context.secrets.GOODREADS_KEY}`
+          process.env.GOODREADS_ID
+        }&shelf=currently-reading&key=${process.env.GOODREADS_KEY}`
       )
         .then(res => res.text())
         .then(text => {
@@ -273,33 +273,4 @@ const resolvers = {
   },
 }
 
-// Required: Export the GraphQL.js schema object as "schema"
-const schema = makeExecutableSchema({
-  typeDefs,
-  resolvers,
-})
-
-// Optional: Export a function to get context from the request. It accepts two
-// parameters - headers (lowercased http headers) and secrets (secrets defined
-// in secrets section). It must return an object (or a promise resolving to it).
-function context(headers, secrets) {
-  return {
-    headers,
-    secrets,
-  }
-}
-
-// Optional: Export a root value to be passed during execution
-// export const rootValue = {};
-
-// Optional: Export a root function, that returns root to be passed
-// during execution, accepting headers and secrets. It can return a
-// promise. rootFunction takes precedence over rootValue.
-// export function rootFunction(headers, secrets) {
-//   return {
-//     headers,
-//     secrets,
-//   };
-// };
-
-module.exports = { schema, context }
+module.exports = { typeDefs, resolvers }
