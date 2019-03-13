@@ -1,5 +1,4 @@
 const express = require('express')
-const cors = require('cors')
 const { ApolloServer } = require('apollo-server-express')
 const { typeDefs, resolvers } = require('./schema')
 
@@ -47,10 +46,9 @@ if (typeof process.env.FOURSQUARE_KEY === 'undefined') {
 
 // Set up Express
 const app = express()
-app.use(cors({ origin: [/lowmess/, /localhost/] }))
 
 const server = new ApolloServer({ typeDefs, resolvers, cacheControl: true })
-server.applyMiddleware({ app })
+server.applyMiddleware({ app, cors: { origin: [/lowmess/, /localhost/] } })
 
 app.listen()
 
