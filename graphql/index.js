@@ -57,8 +57,13 @@ const server = new ApolloServer({
   resolvers,
   cacheControl: true,
   playground: true,
+  introspection: true,
 })
-server.applyMiddleware({ app, cors: { origin: [/lowmess/, /localhost/] } })
+
+server.applyMiddleware({
+  app,
+  cors: { origin: [/lowmess/, /localhost/] },
+})
 
 app.listen()
 
