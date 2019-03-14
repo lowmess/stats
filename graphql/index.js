@@ -56,6 +56,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   cacheControl: true,
+  tracing: true,
   playground: true,
   introspection: true,
 })
