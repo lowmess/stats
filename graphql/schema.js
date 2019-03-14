@@ -1,8 +1,5 @@
 /* eslint-disable no-shadow */
 
-// Created with Apollo Launchpad
-// https://launchpad.graphql.com/37p7j0nxlv
-
 const { gql } = require('apollo-server-express')
 const { format, subDays } = require('date-fns')
 const fetch = require('node-fetch')
