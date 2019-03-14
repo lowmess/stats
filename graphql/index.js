@@ -1,7 +1,11 @@
 const express = require('express')
-const cors = require('cors')
 const { ApolloServer } = require('apollo-server-express')
 const { typeDefs, resolvers } = require('./schema')
+const dotenv = require('dotenv')
+
+if (!process.env.PRODUCTION) {
+  dotenv.config()
+}
 
 // Check for secrets
 if (typeof process.env.GITHUB_KEY === 'undefined') {
@@ -47,10 +51,19 @@ if (typeof process.env.FOURSQUARE_KEY === 'undefined') {
 
 // Set up Express
 const app = express()
-app.use(cors({ origin: [/lowmess/, /localhost/] }))
 
-const server = new ApolloServer({ typeDefs, resolvers, cacheControl: true })
-server.applyMiddleware({ app })
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  cacheControl: true,
+  playground: true,
+  introspection: true,
+})
+
+server.applyMiddleware({
+  app,
+  cors: { origin: [/lowmess/, /localhost/] },
+})
 
 app.listen()
 
