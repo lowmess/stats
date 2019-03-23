@@ -49,6 +49,23 @@ if (typeof process.env.FOURSQUARE_KEY === 'undefined') {
   )
 }
 
+const defaultQuery = `{
+  commits
+  tweets
+  places
+  steps
+  sleep
+  songs
+  album {
+    name
+    artist
+  }
+  books {
+    name
+    author
+  }
+}`
+
 // Set up Express
 const app = express()
 
@@ -57,8 +74,14 @@ const server = new ApolloServer({
   resolvers,
   cacheControl: true,
   tracing: true,
-  playground: true,
   introspection: true,
+  playground: {
+    tabs: [
+      {
+        query: defaultQuery,
+      },
+    ],
+  },
 })
 
 server.applyMiddleware({
