@@ -1,15 +1,59 @@
 /* eslint-disable no-shadow */
 
-// Created with Apollo Launchpad
-// https://launchpad.graphql.com/37p7j0nxlv
-
 const { gql } = require('apollo-server-express')
 const { format, subDays } = require('date-fns')
 const fetch = require('node-fetch')
 const xml2js = require('xml2js')
+const dotenv = require('dotenv')
+
+if (!process.env.PRODUCTION) {
+  dotenv.config()
+}
 
 // get Date object for the day that was 30 days ago
 const thirtyDaysAgo = () => subDays(Date.now(), 30)
+
+// Tweets are defined outside of the resolver because the recursion causes funky
+// errors if the function definition is in the resolver for some reason.
+// Would be nice if Twitter just supported a `since_time` query but whatever.
+const getTweets = (count = 0, max_id = false) => {
+  let uri =
+    'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=lowmess&exclude_replies=false&trim_user=true'
+  if (max_id) uri += `&max_id=${max_id}`
+
+  return fetch(uri, {
+    headers: {
+      Authorization: `Bearer ${process.env.TWITTER_KEY}`,
+    },
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.errors) throw new Error(data.errors[0].message)
+
+      let latest_tweet = 0
+      let latest_id = 0
+
+      data.forEach(tweet => {
+        const time = new Date(tweet.created_at).getTime()
+
+        if (time > thirtyDaysAgo().getTime()) {
+          count++ // eslint-disable-line no-param-reassign
+          latest_tweet = time
+          latest_id = tweet.id
+        }
+      })
+
+      if (latest_tweet > thirtyDaysAgo().getTime()) {
+        return getTweets(count, latest_id)
+      }
+
+      return count
+    })
+    .catch(error => {
+      console.error(error)
+      return null
+    })
+}
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
@@ -25,6 +69,7 @@ const typeDefs = gql`
 
   type Query {
     commits: Int @cacheControl(maxAge: 3600)
+    tweets: Int @cacheControl(maxAge: 3600)
     places: Int @cacheControl(maxAge: 86400)
     steps: Int @cacheControl(maxAge: 3600)
     sleep: Float @cacheControl(maxAge: 86400)
@@ -123,6 +168,10 @@ const resolvers = {
           console.error(err)
           return { amount: null }
         })
+    },
+    // Tweets
+    tweets: (root, args, context) => {
+      return getTweets()
     },
     // Foursquare places
     places: (root, args, context) => {

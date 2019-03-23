@@ -23,6 +23,7 @@ const fillBooks = books => {
 const query = `
   query LocalQuery {
     commits
+    tweets
     places
     steps
     sleep
@@ -49,6 +50,8 @@ fetch('/graphql', {
     if (json.data) {
       // Commits
       if (json.data.commits) stat('commits', json.data.commits.toLocaleString())
+      // Tweets
+      if (json.data.tweets) stat('tweets', json.data.tweets.toLocaleString())
       // Places
       if (json.data.places) stat('places', json.data.places.toLocaleString())
       // Steps

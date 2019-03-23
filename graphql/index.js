@@ -49,6 +49,23 @@ if (typeof process.env.FOURSQUARE_KEY === 'undefined') {
   )
 }
 
+const defaultQuery = `{
+  commits
+  tweets
+  places
+  steps
+  sleep
+  songs
+  album {
+    name
+    artist
+  }
+  books {
+    name
+    author
+  }
+}`
+
 // Set up Express
 const app = express()
 
@@ -56,8 +73,16 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   cacheControl: true,
-  playground: true,
+  tracing: true,
   introspection: true,
+  playground: {
+    tabs: [
+      {
+        endpoint: 'https://stats.lowmess.com/graphql',
+        query: defaultQuery,
+      },
+    ],
+  },
 })
 
 server.applyMiddleware({
