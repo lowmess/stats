@@ -78,6 +78,7 @@ const server = new ApolloServer({
   playground: {
     tabs: [
       {
+        endpoint: 'https://stats.lowmess.com/graphql',
         query: defaultQuery,
       },
     ],
