@@ -1,6 +1,6 @@
 {
   "name": "stats",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Stats API for my about page",
   "main": "./graphql/index.js",
   "scripts": {
