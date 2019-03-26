@@ -69,21 +69,27 @@ const defaultQuery = `{
 // Set up Express
 const app = express()
 
-const server = new ApolloServer({
+const config = {
   typeDefs,
   resolvers,
   cacheControl: true,
   tracing: true,
   introspection: true,
-  playground: {
+  playground: true,
+}
+
+if (process.env.NODE_ENV === 'production') {
+  config.playground = {
     tabs: [
       {
         endpoint: 'https://stats.lowmess.com/graphql',
         query: defaultQuery,
       },
     ],
-  },
-})
+  }
+}
+
+const server = new ApolloServer(config)
 
 server.applyMiddleware({
   app,
