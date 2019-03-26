@@ -18,7 +18,7 @@ const thirtyDaysAgo = () => subDays(Date.now(), 30)
 // Would be nice if Twitter just supported a `since_time` query but whatever.
 const getTweets = (count = 0, max_id = false) => {
   let uri =
-    'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=lowmess&exclude_replies=false&trim_user=true'
+    'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=lowmess&exclude_replies=false&include_rts=false&trim_user=true'
   if (max_id) uri += `&max_id=${max_id}`
 
   return fetch(uri, {
