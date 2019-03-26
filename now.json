@@ -25,7 +25,7 @@
     }
   ],
   "env": {
-    "PRODUCTION": "PRODUCTION",
+    "NODE_ENV": "production",
     "ENGINE_API_KEY": "@apollo_key",
     "GITHUB_KEY": "@github_key",
     "GITHUB_ID": "@github_id",

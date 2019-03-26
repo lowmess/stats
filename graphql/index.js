@@ -3,7 +3,7 @@ const { ApolloServer } = require('apollo-server-express')
 const { typeDefs, resolvers } = require('./schema')
 const dotenv = require('dotenv')
 
-if (!process.env.PRODUCTION) {
+if (process.env.NODE_ENV !== 'production') {
   dotenv.config()
 }
 

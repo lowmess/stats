@@ -6,7 +6,7 @@ const fetch = require('node-fetch')
 const xml2js = require('xml2js')
 const dotenv = require('dotenv')
 
-if (!process.env.PRODUCTION) {
+if (process.env.NODE_ENV !== 'production') {
   dotenv.config()
 }
 
