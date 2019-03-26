@@ -16,7 +16,7 @@ const thirtyDaysAgo = () => subDays(Date.now(), 30)
 // Tweets are defined outside of the resolver because the recursion causes funky
 // errors if the function definition is in the resolver for some reason.
 // Would be nice if Twitter just supported a `since_time` query but whatever.
-const getTweets = (count = 0, max_id = false) => {
+const getTweets = (tweets = new Set(), max_id = false) => {
   let uri =
     'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=lowmess&exclude_replies=false&include_rts=false&trim_user=true'
   if (max_id) uri += `&max_id=${max_id}`
@@ -37,17 +37,17 @@ const getTweets = (count = 0, max_id = false) => {
         const time = new Date(tweet.created_at).getTime()
 
         if (time > thirtyDaysAgo().getTime()) {
-          count++ // eslint-disable-line no-param-reassign
+          tweets.add(tweet.id)
           latest_tweet = time
           latest_id = tweet.id
         }
       })
 
       if (latest_tweet > thirtyDaysAgo().getTime()) {
-        return getTweets(count, latest_id)
+        return getTweets(tweets, latest_id)
       }
 
-      return count
+      return tweets.size
     })
     .catch(error => {
       console.error(error)
