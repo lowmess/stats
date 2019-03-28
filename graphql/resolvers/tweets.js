@@ -5,7 +5,7 @@ const thirtyDaysAgoTime = thirtyDaysAgo().getTime()
 
 const getTweets = (tweets = new Set(), maxId = false) => {
   let uri =
-    'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=lowmess&exclude_replies=false&include_rts=false&trim_user=true'
+    'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=lowmess&trim_user=1&exclude_replies=0&include_rts=1&count=50'
 
   if (maxId) uri += `&max_id=${maxId}`
 
@@ -32,16 +32,12 @@ const getTweets = (tweets = new Set(), maxId = false) => {
       json.forEach((tweet, index) => {
         const time = new Date(tweet.created_at).getTime()
 
-        if (index === 0) {
-          latestTweetTime = time
-          latestTweetId = tweet.id
-        }
-
-        if (time > thirtyDaysAgoTime) {
-          latestTweetTime = time
-          latestTweetId = tweet.id
+        if (time > thirtyDaysAgoTime && !tweet.retweeted_status) {
           tweets.add(tweet.id)
         }
+
+        latestTweetTime = time
+        latestTweetId = tweet.id
       })
 
       if (latestTweetTime > thirtyDaysAgoTime) {
