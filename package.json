@@ -25,6 +25,7 @@
     "prettier": "^1.16.4"
   },
   "dependencies": {
+    "abort-controller": "^2.0.3",
     "apollo-server-express": "^2.4.8",
     "babel-eslint": "^10.0.1",
     "date-fns": "^1.29.0",
