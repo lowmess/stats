@@ -1,48 +1,22 @@
-const fetch = require('node-fetch')
-const AbortController = require('abort-controller')
+const fetch = require('../lib/fetchWithTimeout')
 const { thirtyDaysAgo } = require('../lib/date')
 
-// shim Promise.finally for Node 8
-require('promise.prototype.finally').shim()
-
 const getSongs = () => {
-  const controller = new AbortController()
-  const timeout = setTimeout(() => {
-    controller.abort()
-  }, 5000)
+  const uri = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&limit=1&user=${
+    process.env.LASTFM_USERNAME
+  }&from=${Math.floor(thirtyDaysAgo().getTime() / 1000)}&to=${Math.floor(
+    Date.now() / 1000
+  )}&api_key=${process.env.LASTFM_KEY}&format=json`
 
-  return fetch(
-    `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&limit=1&user=${
-      process.env.LASTFM_USERNAME
-    }&from=${Math.floor(thirtyDaysAgo().getTime() / 1000)}&to=${Math.floor(
-      Date.now() / 1000
-    )}&api_key=${process.env.LASTFM_KEY}&format=json`,
-    { signal: controller.signal }
-  )
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`${response.status}: ${response.statusText}`)
-      }
+  const countSongs = data => {
+    if (!data.recenttracks) {
+      throw new Error(`Last.fm responded without a recent tracks object`)
+    }
 
-      return response.json()
-    })
-    .then(json => {
-      if (!json.recenttracks) {
-        throw new Error(`Last.fm responded without a recent tracks object`)
-      }
+    return data.recenttracks['@attr'].total
+  }
 
-      return json.recenttracks['@attr'].total
-    })
-    .catch(error => {
-      if (error.name === 'AbortError') {
-        throw new Error(`Request timed out`)
-      }
-
-      throw new Error(error.message ? error.message : error)
-    })
-    .finally(() => {
-      clearTimeout(timeout)
-    })
+  return fetch(uri, {}, countSongs)
 }
 
 module.exports = getSongs

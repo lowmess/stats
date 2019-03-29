@@ -1,58 +1,30 @@
-const fetch = require('node-fetch')
-const AbortController = require('abort-controller')
-
-// shim Promise.finally for Node 8
-require('promise.prototype.finally').shim()
+const fetch = require('../lib/fetchWithTimeout')
 
 const getSteps = () => {
-  const controller = new AbortController()
-  const timeout = setTimeout(() => {
-    controller.abort()
-  }, 5000)
+  const uri =
+    'https://api.fitbit.com/1/user/-/activities/steps/date/today/30d.json'
 
-  return fetch(
-    'https://api.fitbit.com/1/user/-/activities/steps/date/today/30d.json',
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.FITBIT_KEY}`,
-      },
-      signal: controller.signal,
+  const options = {
+    headers: {
+      Authorization: `Bearer ${process.env.FITBIT_KEY}`,
+    },
+  }
+
+  const countSteps = data => {
+    if (!data['activities-steps']) {
+      throw new Error(`FitBit responded without a steps object`)
     }
-  )
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`${response.status}: ${response.statusText}`)
-      }
 
-      return response.json()
+    let amount = 0
+
+    data['activities-steps'].forEach(activity => {
+      amount += parseInt(activity.value, 10)
     })
-    .then(json => {
-      if (!json['activities-steps']) {
-        throw new Error(`FitBit responded without a steps object`)
-      }
 
-      let amount = null
+    return amount
+  }
 
-      if (json['activities-steps']) {
-        amount = 0
-
-        json['activities-steps'].forEach(activity => {
-          amount += parseInt(activity.value, 10)
-        })
-      }
-
-      return amount
-    })
-    .catch(error => {
-      if (error.name === 'AbortError') {
-        throw new Error(`Request timed out`)
-      }
-
-      throw new Error(error.message ? error.message : error)
-    })
-    .finally(() => {
-      clearTimeout(timeout)
-    })
+  return fetch(uri, options, countSteps)
 }
 
 module.exports = getSteps

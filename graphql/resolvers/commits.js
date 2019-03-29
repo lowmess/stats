@@ -1,16 +1,7 @@
-const fetch = require('node-fetch')
-const AbortController = require('abort-controller')
+const fetch = require('../lib/fetchWithTimeout')
 const { thirtyDaysAgo } = require('../lib/date')
 
-// shim Promise.finally for Node 8
-require('promise.prototype.finally').shim()
-
 const getCommits = () => {
-  const controller = new AbortController()
-  const timeout = setTimeout(() => {
-    controller.abort()
-  }, 5000)
-
   const query = `query recentCommits($date: GitTimestamp, $author: CommitAuthor) {
     viewer {
       repositories(first: 100) {
@@ -55,7 +46,7 @@ const getCommits = () => {
     author: { id: process.env.GITHUB_ID },
   }
 
-  return fetch(`https://api.github.com/graphql`, {
+  const options = {
     method: 'POST',
     body: JSON.stringify({
       query,
@@ -65,54 +56,39 @@ const getCommits = () => {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${process.env.GITHUB_KEY}`,
     },
-    signal: controller.signal,
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`${response.status}: ${response.statusText}`)
+  }
+
+  const countCommits = ({ data }) => {
+    if (!data) {
+      throw new Error(`GitHub responded without a data object`)
+    }
+
+    let amount = 0
+
+    data.viewer.repositories.nodes.forEach(node => {
+      if (node.ref) {
+        node.ref.target.history.edges.forEach(edge => {
+          if (edge.node.id) {
+            amount++
+          }
+        })
       }
-
-      return response.json()
     })
-    .then(json => {
-      if (!json.data) {
-        throw new Error(`GitHub responded without a data object`)
+
+    data.viewer.repositoriesContributedTo.nodes.forEach(node => {
+      if (node.ref) {
+        node.ref.target.history.edges.forEach(edge => {
+          if (edge.node.id) {
+            amount++
+          }
+        })
       }
-
-      let amount = 0
-
-      json.data.viewer.repositories.nodes.forEach(node => {
-        if (node.ref) {
-          node.ref.target.history.edges.forEach(edge => {
-            if (edge.node.id) {
-              amount++
-            }
-          })
-        }
-      })
-
-      json.data.viewer.repositoriesContributedTo.nodes.forEach(node => {
-        if (node.ref) {
-          node.ref.target.history.edges.forEach(edge => {
-            if (edge.node.id) {
-              amount++
-            }
-          })
-        }
-      })
-
-      return amount
     })
-    .catch(error => {
-      if (error.name === 'AbortError') {
-        throw new Error(`Request timed out`)
-      }
 
-      throw new Error(error.message ? error.message : error)
-    })
-    .finally(() => {
-      clearTimeout(timeout)
-    })
+    return amount
+  }
+
+  return fetch(`https://api.github.com/graphql`, options, countCommits)
 }
 
 module.exports = getCommits

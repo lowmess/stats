@@ -1,54 +1,28 @@
-const fetch = require('node-fetch')
-const AbortController = require('abort-controller')
+const fetch = require('../lib/fetchWithTimeout')
 const { thirtyDaysAgo } = require('../lib/date')
 
-// shim Promise.finally for Node 8
-require('promise.prototype.finally').shim()
-
 const getPlaces = () => {
-  const controller = new AbortController()
-  const timeout = setTimeout(() => {
-    controller.abort()
-  }, 5000)
+  const uri = `https://api.foursquare.com/v2/users/self/checkins?oauth_token=${
+    process.env.FOURSQUARE_KEY
+  }&limit=250&afterTimestamp=${Math.floor(
+    thirtyDaysAgo().getTime() / 1000
+  )}&v=20180101&limit=250`
 
-  return fetch(
-    `https://api.foursquare.com/v2/users/self/checkins?oauth_token=${
-      process.env.FOURSQUARE_KEY
-    }&limit=250&afterTimestamp=${Math.floor(
-      thirtyDaysAgo().getTime() / 1000
-    )}&v=20180101&limit=250`,
-    { signal: controller.signal }
-  )
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`${response.status}: ${response.statusText}`)
-      }
+  const countPlaces = data => {
+    if (!data.response) {
+      throw new Error(`Foursquare responded without a response object`)
+    }
 
-      return response.json()
-    })
-    .then(json => {
-      if (!json.response) {
-        throw new Error(`Foursquare responded without a response object`)
-      }
+    let places = null
 
-      let places = null
+    if (Object.keys(data.response).length !== 0) {
+      places = data.response.checkins.items.length
+    }
 
-      if (Object.keys(json.response).length !== 0) {
-        places = json.response.checkins.items.length
-      }
+    return places
+  }
 
-      return places
-    })
-    .catch(error => {
-      if (error.name === 'AbortError') {
-        throw new Error(`Request timed out`)
-      }
-
-      throw new Error(error.message ? error.message : error)
-    })
-    .finally(() => {
-      clearTimeout(timeout)
-    })
+  return fetch(uri, {}, countPlaces)
 }
 
 module.exports = getPlaces
