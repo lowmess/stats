@@ -1,10 +1,20 @@
 const fetch = require('node-fetch')
+const AbortController = require('abort-controller')
 
-const getAlbum = () =>
-  fetch(
+// shim Promise.finally for Node 8
+require('promise.prototype.finally').shim()
+
+const getAlbum = () => {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => {
+    controller.abort()
+  }, 5000)
+
+  return fetch(
     `https://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&limit=1&user=${
       process.env.LASTFM_USERNAME
-    }&period=1month&api_key=${process.env.LASTFM_KEY}&format=json`
+    }&period=1month&api_key=${process.env.LASTFM_KEY}&format=json`,
+    { signal: controller.signal }
   )
     .then(response => {
       if (!response.ok) {
@@ -24,7 +34,15 @@ const getAlbum = () =>
       }
     })
     .catch(error => {
+      if (error.name === 'AbortError') {
+        throw new Error(`Request timed out`)
+      }
+
       throw new Error(error.message ? error.message : error)
     })
+    .finally(() => {
+      clearTimeout(timeout)
+    })
+}
 
 module.exports = getAlbum

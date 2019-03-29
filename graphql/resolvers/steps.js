@@ -1,12 +1,22 @@
 const fetch = require('node-fetch')
+const AbortController = require('abort-controller')
 
-const getSteps = () =>
-  fetch(
+// shim Promise.finally for Node 8
+require('promise.prototype.finally').shim()
+
+const getSteps = () => {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => {
+    controller.abort()
+  }, 5000)
+
+  return fetch(
     'https://api.fitbit.com/1/user/-/activities/steps/date/today/30d.json',
     {
       headers: {
         Authorization: `Bearer ${process.env.FITBIT_KEY}`,
       },
+      signal: controller.signal,
     }
   )
     .then(response => {
@@ -34,7 +44,15 @@ const getSteps = () =>
       return amount
     })
     .catch(error => {
+      if (error.name === 'AbortError') {
+        throw new Error(`Request timed out`)
+      }
+
       throw new Error(error.message ? error.message : error)
     })
+    .finally(() => {
+      clearTimeout(timeout)
+    })
+}
 
 module.exports = getSteps
