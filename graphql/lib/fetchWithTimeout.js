@@ -17,16 +17,8 @@ const fetchWithTimeout = (uri, options, cb, type = 'json', time = 5000) => {
         throw new Error(`${response.status}: ${response.statusText}`)
       }
 
-      switch (type) {
-        case 'text':
-          return response.text()
-        case 'json':
-          return response.json()
-        default:
-          return response.json()
-      }
+      return cb(response)
     })
-    .then(data => cb(data))
     .catch(error => {
       if (error.name === 'AbortError') {
         throw new Error(`Request timed out`)

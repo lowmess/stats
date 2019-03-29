@@ -58,35 +58,36 @@ const getCommits = () => {
     },
   }
 
-  const countCommits = ({ data }) => {
-    if (!data) {
-      throw new Error(`GitHub responded without a data object`)
-    }
-
-    let amount = 0
-
-    data.viewer.repositories.nodes.forEach(node => {
-      if (node.ref) {
-        node.ref.target.history.edges.forEach(edge => {
-          if (edge.node.id) {
-            amount++
-          }
-        })
+  const countCommits = response =>
+    response.json().then(({ data }) => {
+      if (!data) {
+        throw new Error(`GitHub responded without a data object`)
       }
-    })
 
-    data.viewer.repositoriesContributedTo.nodes.forEach(node => {
-      if (node.ref) {
-        node.ref.target.history.edges.forEach(edge => {
-          if (edge.node.id) {
-            amount++
-          }
-        })
-      }
-    })
+      let amount = 0
 
-    return amount
-  }
+      data.viewer.repositories.nodes.forEach(node => {
+        if (node.ref) {
+          node.ref.target.history.edges.forEach(edge => {
+            if (edge.node.id) {
+              amount++
+            }
+          })
+        }
+      })
+
+      data.viewer.repositoriesContributedTo.nodes.forEach(node => {
+        if (node.ref) {
+          node.ref.target.history.edges.forEach(edge => {
+            if (edge.node.id) {
+              amount++
+            }
+          })
+        }
+      })
+
+      return amount
+    })
 
   return fetch(`https://api.github.com/graphql`, options, countCommits)
 }

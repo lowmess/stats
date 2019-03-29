@@ -10,19 +10,20 @@ const getSteps = () => {
     },
   }
 
-  const countSteps = data => {
-    if (!data['activities-steps']) {
-      throw new Error(`FitBit responded without a steps object`)
-    }
+  const countSteps = response =>
+    response.json().then(data => {
+      if (!data['activities-steps']) {
+        throw new Error(`FitBit responded without a steps object`)
+      }
 
-    let amount = 0
+      let amount = 0
 
-    data['activities-steps'].forEach(activity => {
-      amount += parseInt(activity.value, 10)
+      data['activities-steps'].forEach(activity => {
+        amount += parseInt(activity.value, 10)
+      })
+
+      return amount
     })
-
-    return amount
-  }
 
   return fetch(uri, options, countSteps)
 }

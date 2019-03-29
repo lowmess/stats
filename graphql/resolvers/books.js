@@ -6,27 +6,28 @@ const getBooks = () => {
     process.env.GOODREADS_ID
   }&shelf=currently-reading&key=${process.env.GOODREADS_KEY}`
 
-  const formatBooks = data => {
-    const books = []
+  const formatBooks = response =>
+    response.text().then(data => {
+      const books = []
 
-    xml2js.parseString(data, { normalizeTags: true }, (error, result) => {
-      if (error) {
-        throw new Error(error.message ? error.message : error)
-      }
+      xml2js.parseString(data, { normalizeTags: true }, (error, result) => {
+        if (error) {
+          throw new Error(error.message ? error.message : error)
+        }
 
-      if (!result.goodreadsresponse) {
-        throw new Error(`Goodreads responded without a response object`)
-      }
+        if (!result.goodreadsresponse) {
+          throw new Error(`Goodreads responded without a response object`)
+        }
 
-      result.goodreadsresponse.reviews[0].review.forEach(book => {
-        const name = book.book[0].title[0]
-        const author = book.book[0].authors[0].author[0].name[0]
-        books.push({ name, author })
+        result.goodreadsresponse.reviews[0].review.forEach(book => {
+          const name = book.book[0].title[0]
+          const author = book.book[0].authors[0].author[0].name[0]
+          books.push({ name, author })
+        })
       })
-    })
 
-    return books
-  }
+      return books
+    })
 
   return fetch(uri, {}, formatBooks, 'text')
 }

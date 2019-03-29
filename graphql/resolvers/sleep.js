@@ -14,23 +14,24 @@ const getSleep = () => {
     },
   }
 
-  const countSleep = data => {
-    if (!data.sleep) {
-      throw new Error(`FitBit responded without a sleep object`)
-    }
+  const countSleep = response =>
+    response.json().then(data => {
+      if (!data.sleep) {
+        throw new Error(`FitBit responded without a sleep object`)
+      }
 
-    let duration = null
+      let duration = null
 
-    if (data.sleep) {
-      duration = 0
+      if (data.sleep) {
+        duration = 0
 
-      data.sleep.forEach(night => {
-        duration += night.duration / 1000 / 60 / 60
-      })
-    }
+        data.sleep.forEach(night => {
+          duration += night.duration / 1000 / 60 / 60
+        })
+      }
 
-    return duration
-  }
+      return duration
+    })
 
   return fetch(uri, options, countSleep)
 }
