@@ -2,6 +2,9 @@ const fetch = require('node-fetch')
 const AbortController = require('abort-controller')
 const { thirtyDaysAgo } = require('../lib/date')
 
+// shim Promise.finally for Node 8
+require('promise.prototype.finally').shim()
+
 const thirtyDaysAgoTime = thirtyDaysAgo().getTime()
 
 const getTweets = (tweets = new Set(), maxId = false) => {

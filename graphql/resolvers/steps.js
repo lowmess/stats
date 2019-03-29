@@ -1,6 +1,9 @@
 const fetch = require('node-fetch')
 const AbortController = require('abort-controller')
 
+// shim Promise.finally for Node 8
+require('promise.prototype.finally').shim()
+
 const getSteps = () => {
   const controller = new AbortController()
   const timeout = setTimeout(() => {

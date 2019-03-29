@@ -3,6 +3,9 @@ const AbortController = require('abort-controller')
 const format = require('date-fns/format')
 const { thirtyDaysAgo } = require('../lib/date')
 
+// shim Promise.finally for Node 8
+require('promise.prototype.finally').shim()
+
 const getSleep = () => {
   const controller = new AbortController()
   const timeout = setTimeout(() => {

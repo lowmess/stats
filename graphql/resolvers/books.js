@@ -2,6 +2,9 @@ const fetch = require('node-fetch')
 const AbortController = require('abort-controller')
 const xml2js = require('xml2js')
 
+// shim Promise.finally for Node 8
+require('promise.prototype.finally').shim()
+
 const getBooks = () => {
   const controller = new AbortController()
   const timeout = setTimeout(() => {
