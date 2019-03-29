@@ -29,7 +29,7 @@ const getBooks = () => {
       return books
     })
 
-  return fetch(uri, {}, formatBooks, 'text')
+  return fetch(uri, {}, formatBooks)
 }
 
 module.exports = getBooks
