@@ -15,31 +15,32 @@ const getTweets = (tweets = new Set(), maxId = false) => {
     },
   }
 
-  const countTweets = data => {
-    if (data.errors) {
-      throw new Error(data.errors[0].message)
-    }
-
-    let latestTweetTime = 0
-    let latestTweetId = 0
-
-    data.forEach(tweet => {
-      const time = new Date(tweet.created_at).getTime()
-
-      if (time > thirtyDaysAgoTime && !tweet.retweeted_status) {
-        tweets.add(tweet.id)
+  const countTweets = response =>
+    response.json().then(data => {
+      if (data.errors) {
+        throw new Error(data.errors[0].message)
       }
 
-      latestTweetTime = time
-      latestTweetId = tweet.id
+      let latestTweetTime = 0
+      let latestTweetId = 0
+
+      data.forEach(tweet => {
+        const time = new Date(tweet.created_at).getTime()
+
+        if (time > thirtyDaysAgoTime && !tweet.retweeted_status) {
+          tweets.add(tweet.id)
+        }
+
+        latestTweetTime = time
+        latestTweetId = tweet.id
+      })
+
+      if (latestTweetTime > thirtyDaysAgoTime) {
+        return getTweets(tweets, latestTweetId)
+      }
+
+      return tweets.size
     })
-
-    if (latestTweetTime > thirtyDaysAgoTime) {
-      return getTweets(tweets, latestTweetId)
-    }
-
-    return tweets.size
-  }
 
   return fetch(uri, options, countTweets)
 }

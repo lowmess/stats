@@ -8,13 +8,14 @@ const getSongs = () => {
     Date.now() / 1000
   )}&api_key=${process.env.LASTFM_KEY}&format=json`
 
-  const countSongs = data => {
-    if (!data.recenttracks) {
-      throw new Error(`Last.fm responded without a recent tracks object`)
-    }
+  const countSongs = response =>
+    response.json().then(data => {
+      if (!data.recenttracks) {
+        throw new Error(`Last.fm responded without a recent tracks object`)
+      }
 
-    return data.recenttracks['@attr'].total
-  }
+      return data.recenttracks['@attr'].total
+    })
 
   return fetch(uri, {}, countSongs)
 }

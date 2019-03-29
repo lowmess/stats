@@ -8,19 +8,20 @@ const getPlaces = () => {
     thirtyDaysAgo().getTime() / 1000
   )}&v=20180101&limit=250`
 
-  const countPlaces = data => {
-    if (!data.response) {
-      throw new Error(`Foursquare responded without a response object`)
-    }
+  const countPlaces = response =>
+    response.json().then(data => {
+      if (!data.response) {
+        throw new Error(`Foursquare responded without a response object`)
+      }
 
-    let places = null
+      let places = null
 
-    if (Object.keys(data.response).length !== 0) {
-      places = data.response.checkins.items.length
-    }
+      if (Object.keys(data.response).length !== 0) {
+        places = data.response.checkins.items.length
+      }
 
-    return places
-  }
+      return places
+    })
 
   return fetch(uri, {}, countPlaces)
 }

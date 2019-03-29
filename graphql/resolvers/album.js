@@ -5,15 +5,17 @@ const getAlbum = () => {
     process.env.LASTFM_USERNAME
   }&period=1month&api_key=${process.env.LASTFM_KEY}&format=json`
 
-  const formatAlbum = data => {
-    if (!data.topalbums) {
-      throw new Error(`Last.fm responded without a top albums object`)
-    }
+  const formatAlbum = response => {
+    return response.json().then(data => {
+      if (!data.topalbums) {
+        throw new Error(`Last.fm responded without a top albums object`)
+      }
 
-    return {
-      name: data.topalbums.album[0].name,
-      artist: data.topalbums.album[0].artist.name,
-    }
+      return {
+        name: data.topalbums.album[0].name,
+        artist: data.topalbums.album[0].artist.name,
+      }
+    })
   }
 
   return fetch(uri, {}, formatAlbum)
