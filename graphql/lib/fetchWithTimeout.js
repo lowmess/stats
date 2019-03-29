@@ -1,15 +1,13 @@
 const fetch = require('node-fetch')
 const AbortController = require('abort-controller')
 
-// shim Promise.finally for Node 8
-require('promise.prototype.finally').shim()
-
 const fetchWithTimeout = (uri, options, cb, time = 5000) => {
   const controller = new AbortController()
-  const timeout = setTimeout(() => {
+  const config = { ...options, signal: controller.signal }
+
+  setTimeout(() => {
     controller.abort()
   }, time)
-  const config = { ...options, signal: controller.signal }
 
   return fetch(uri, config)
     .then(response => {
@@ -25,9 +23,6 @@ const fetchWithTimeout = (uri, options, cb, time = 5000) => {
       }
 
       throw new Error(error.message ? error.message : error)
-    })
-    .finally(() => {
-      clearTimeout(timeout)
     })
 }
 
