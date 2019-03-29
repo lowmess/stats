@@ -4,7 +4,7 @@ const AbortController = require('abort-controller')
 // shim Promise.finally for Node 8
 require('promise.prototype.finally').shim()
 
-const fetchWithTimeout = (uri, options, cb, type = 'json', time = 5000) => {
+const fetchWithTimeout = (uri, options, cb, time = 5000) => {
   const controller = new AbortController()
   const timeout = setTimeout(() => {
     controller.abort()
