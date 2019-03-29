@@ -1,11 +1,18 @@
 const fetch = require('node-fetch')
+const AbortController = require('abort-controller')
 const xml2js = require('xml2js')
 
-const getBooks = () =>
-  fetch(
+const getBooks = () => {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => {
+    controller.abort()
+  }, 5000)
+
+  return fetch(
     `https://www.goodreads.com/review/list?v=2&id=${
       process.env.GOODREADS_ID
-    }&shelf=currently-reading&key=${process.env.GOODREADS_KEY}`
+    }&shelf=currently-reading&key=${process.env.GOODREADS_KEY}`,
+    { signal: controller.signal }
   )
     .then(response => {
       if (!response.ok) {
@@ -36,7 +43,15 @@ const getBooks = () =>
       return books
     })
     .catch(error => {
+      if (error.name === 'AbortError') {
+        throw new Error(`Request timed out`)
+      }
+
       throw new Error(error.message ? error.message : error)
     })
+    .finally(() => {
+      clearTimeout(timeout)
+    })
+}
 
 module.exports = getBooks

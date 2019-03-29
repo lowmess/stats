@@ -1,7 +1,13 @@
 const fetch = require('node-fetch')
+const AbortController = require('abort-controller')
 const { thirtyDaysAgo } = require('../lib/date')
 
 const getCommits = () => {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => {
+    controller.abort()
+  }, 5000)
+
   const query = `query recentCommits($date: GitTimestamp, $author: CommitAuthor) {
     viewer {
       repositories(first: 100) {
@@ -56,6 +62,7 @@ const getCommits = () => {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${process.env.GITHUB_KEY}`,
     },
+    signal: controller.signal,
   })
     .then(response => {
       if (!response.ok) {
@@ -94,7 +101,14 @@ const getCommits = () => {
       return amount
     })
     .catch(error => {
+      if (error.name === 'AbortError') {
+        throw new Error(`Request timed out`)
+      }
+
       throw new Error(error.message ? error.message : error)
+    })
+    .finally(() => {
+      clearTimeout(timeout)
     })
 }
 

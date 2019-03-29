@@ -1,9 +1,15 @@
 const fetch = require('node-fetch')
+const AbortController = require('abort-controller')
 const format = require('date-fns/format')
 const { thirtyDaysAgo } = require('../lib/date')
 
-const getSleep = () =>
-  fetch(
+const getSleep = () => {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => {
+    controller.abort()
+  }, 5000)
+
+  return fetch(
     `https://api.fitbit.com/1.2/user/-/sleep/date/${format(
       thirtyDaysAgo(),
       'YYYY-MM-DD'
@@ -12,6 +18,7 @@ const getSleep = () =>
       headers: {
         Authorization: `Bearer ${process.env.FITBIT_KEY}`,
       },
+      signal: controller.signal,
     }
   )
     .then(response => {
@@ -39,7 +46,15 @@ const getSleep = () =>
       return duration
     })
     .catch(error => {
+      if (error.name === 'AbortError') {
+        throw new Error(`Request timed out`)
+      }
+
       throw new Error(error.message ? error.message : error)
     })
+    .finally(() => {
+      clearTimeout(timeout)
+    })
+}
 
 module.exports = getSleep

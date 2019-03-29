@@ -1,15 +1,21 @@
 const fetch = require('node-fetch')
+const AbortController = require('abort-controller')
 const { thirtyDaysAgo } = require('../lib/date')
 
 const thirtyDaysAgoTime = thirtyDaysAgo().getTime()
 
 const getTweets = (tweets = new Set(), maxId = false) => {
+  const controller = new AbortController()
+  const timeout = setTimeout(() => {
+    controller.abort()
+  }, 5000)
   let uri =
     'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=lowmess&trim_user=1&exclude_replies=0&include_rts=1&count=50'
 
   if (maxId) uri += `&max_id=${maxId}`
 
   return fetch(uri, {
+    signal: controller.signal,
     headers: {
       Authorization: `Bearer ${process.env.TWITTER_KEY}`,
     },
@@ -47,7 +53,14 @@ const getTweets = (tweets = new Set(), maxId = false) => {
       return tweets.size
     })
     .catch(error => {
+      if (error.name === 'AbortError') {
+        throw new Error(`Request timed out`)
+      }
+
       throw new Error(error.message ? error.message : error)
+    })
+    .finally(() => {
+      clearTimeout(timeout)
     })
 }
 
