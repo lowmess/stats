@@ -1,63 +1,38 @@
-const fetch = require('node-fetch')
-const AbortController = require('abort-controller')
+const fetch = require('../lib/fetchWithTimeout')
 const format = require('date-fns/format')
 const { thirtyDaysAgo } = require('../lib/date')
 
-// shim Promise.finally for Node 8
-require('promise.prototype.finally').shim()
-
 const getSleep = () => {
-  const controller = new AbortController()
-  const timeout = setTimeout(() => {
-    controller.abort()
-  }, 5000)
+  const uri = `https://api.fitbit.com/1.2/user/-/sleep/date/${format(
+    thirtyDaysAgo(),
+    'YYYY-MM-DD'
+  )}/${format(Date.now(), 'YYYY-MM-DD')}.json`
 
-  return fetch(
-    `https://api.fitbit.com/1.2/user/-/sleep/date/${format(
-      thirtyDaysAgo(),
-      'YYYY-MM-DD'
-    )}/${format(Date.now(), 'YYYY-MM-DD')}.json`,
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.FITBIT_KEY}`,
-      },
-      signal: controller.signal,
+  const options = {
+    headers: {
+      Authorization: `Bearer ${process.env.FITBIT_KEY}`,
+    },
+  }
+
+  const countSleep = data => {
+    if (!data.sleep) {
+      throw new Error(`FitBit responded without a sleep object`)
     }
-  )
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`${response.status}: ${response.statusText}`)
-      }
 
-      return response.json()
-    })
-    .then(json => {
-      if (!json.sleep) {
-        throw new Error(`FitBit responded without a sleep object`)
-      }
+    let duration = null
 
-      let duration = null
+    if (data.sleep) {
+      duration = 0
 
-      if (json.sleep) {
-        duration = 0
+      data.sleep.forEach(night => {
+        duration += night.duration / 1000 / 60 / 60
+      })
+    }
 
-        json.sleep.forEach(night => {
-          duration += night.duration / 1000 / 60 / 60
-        })
-      }
+    return duration
+  }
 
-      return duration
-    })
-    .catch(error => {
-      if (error.name === 'AbortError') {
-        throw new Error(`Request timed out`)
-      }
-
-      throw new Error(error.message ? error.message : error)
-    })
-    .finally(() => {
-      clearTimeout(timeout)
-    })
+  return fetch(uri, options, countSleep)
 }
 
 module.exports = getSleep
