@@ -5,8 +5,9 @@ const getAlbum = () => {
     process.env.LASTFM_USERNAME
   }&period=1month&api_key=${process.env.LASTFM_KEY}&format=json`
 
-  const formatAlbum = response => {
-    return response.json().then(data => {
+  return fetch(uri)
+    .then(response => response.json())
+    .then(data => {
       if (!data.topalbums) {
         throw new Error(`Last.fm responded without a top albums object`)
       }
@@ -16,9 +17,9 @@ const getAlbum = () => {
         artist: data.topalbums.album[0].artist.name,
       }
     })
-  }
-
-  return fetch(uri, {}, formatAlbum)
+    .catch(error => {
+      throw new Error(error.message)
+    })
 }
 
 module.exports = getAlbum

@@ -8,8 +8,9 @@ const getPlaces = () => {
     thirtyDaysAgo().getTime() / 1000
   )}&v=20180101&limit=250`
 
-  const countPlaces = response =>
-    response.json().then(data => {
+  return fetch(uri)
+    .then(response => response.json())
+    .then(data => {
       if (!data.response) {
         throw new Error(`Foursquare responded without a response object`)
       }
@@ -22,8 +23,9 @@ const getPlaces = () => {
 
       return places
     })
-
-  return fetch(uri, {}, countPlaces)
+    .catch(error => {
+      throw new Error(error.message)
+    })
 }
 
 module.exports = getPlaces

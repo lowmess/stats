@@ -6,8 +6,9 @@ const getBooks = () => {
     process.env.GOODREADS_ID
   }&shelf=currently-reading&key=${process.env.GOODREADS_KEY}`
 
-  const formatBooks = response =>
-    response.text().then(data => {
+  return fetch(uri)
+    .then(response => response.text())
+    .then(data => {
       const books = []
 
       xml2js.parseString(data, { normalizeTags: true }, (error, result) => {
@@ -28,8 +29,9 @@ const getBooks = () => {
 
       return books
     })
-
-  return fetch(uri, {}, formatBooks)
+    .catch(error => {
+      throw new Error(error.message)
+    })
 }
 
 module.exports = getBooks

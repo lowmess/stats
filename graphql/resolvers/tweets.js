@@ -15,8 +15,9 @@ const getTweets = (tweets = new Set(), maxId = false) => {
     },
   }
 
-  const countTweets = response =>
-    response.json().then(data => {
+  return fetch(uri, options)
+    .then(response => response.json())
+    .then(data => {
       if (data.errors) {
         throw new Error(data.errors[0].message)
       }
@@ -41,8 +42,9 @@ const getTweets = (tweets = new Set(), maxId = false) => {
 
       return tweets.size
     })
-
-  return fetch(uri, options, countTweets)
+    .catch(error => {
+      throw new Error(error.message)
+    })
 }
 
 module.exports = getTweets

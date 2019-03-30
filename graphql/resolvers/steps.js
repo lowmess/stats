@@ -10,8 +10,9 @@ const getSteps = () => {
     },
   }
 
-  const countSteps = response =>
-    response.json().then(data => {
+  return fetch(uri, options)
+    .then(response => response.json())
+    .then(data => {
       if (!data['activities-steps']) {
         throw new Error(`FitBit responded without a steps object`)
       }
@@ -24,8 +25,9 @@ const getSteps = () => {
 
       return amount
     })
-
-  return fetch(uri, options, countSteps)
+    .catch(error => {
+      throw new Error(error.message)
+    })
 }
 
 module.exports = getSteps

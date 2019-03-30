@@ -1,7 +1,7 @@
 const fetch = require('node-fetch')
 const AbortController = require('abort-controller')
 
-const fetchWithTimeout = (uri, options, cb, time = 5000) => {
+const fetchWithTimeout = (uri, options = {}, time = 5000) => {
   const controller = new AbortController()
   const config = { ...options, signal: controller.signal }
 
@@ -15,7 +15,7 @@ const fetchWithTimeout = (uri, options, cb, time = 5000) => {
         throw new Error(`${response.status}: ${response.statusText}`)
       }
 
-      return cb(response)
+      return response
     })
     .catch(error => {
       if (error.name === 'AbortError') {

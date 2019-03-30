@@ -58,8 +58,9 @@ const getCommits = () => {
     },
   }
 
-  const countCommits = response =>
-    response.json().then(({ data }) => {
+  return fetch(`https://api.github.com/graphql`, options)
+    .then(response => response.json())
+    .then(({ data }) => {
       if (!data) {
         throw new Error(`GitHub responded without a data object`)
       }
@@ -88,8 +89,9 @@ const getCommits = () => {
 
       return amount
     })
-
-  return fetch(`https://api.github.com/graphql`, options, countCommits)
+    .catch(error => {
+      throw new Error(error.message)
+    })
 }
 
 module.exports = getCommits

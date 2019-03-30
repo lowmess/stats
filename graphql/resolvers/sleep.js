@@ -14,8 +14,9 @@ const getSleep = () => {
     },
   }
 
-  const countSleep = response =>
-    response.json().then(data => {
+  return fetch(uri, options)
+    .then(response => response.json())
+    .then(data => {
       if (!data.sleep) {
         throw new Error(`FitBit responded without a sleep object`)
       }
@@ -32,8 +33,9 @@ const getSleep = () => {
 
       return duration
     })
-
-  return fetch(uri, options, countSleep)
+    .catch(error => {
+      throw new Error(error.message)
+    })
 }
 
 module.exports = getSleep
