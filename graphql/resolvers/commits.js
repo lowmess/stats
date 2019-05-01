@@ -9,7 +9,7 @@ const getCommits = async () => {
           ref(qualifiedName: "master") {
             target {
               ... on Commit {
-                history(since:$date, first: 100, author:$author) {
+                history(since: $date, first: 100, author: $author) {
                   edges {
                     node {
                       id
@@ -21,12 +21,13 @@ const getCommits = async () => {
           }
         }
       }
+
       repositoriesContributedTo(first: 100) {
         nodes {
           ref(qualifiedName: "master") {
             target {
               ... on Commit {
-                history(since:$date, first: 100, author:$author) {
+                history(since: $date, first: 100, author: $author) {
                   edges {
                     node {
                       id
