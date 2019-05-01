@@ -1,6 +1,6 @@
 const fetch = require('../lib/fetchWithTimeout')
 
-const getSteps = () => {
+const getSteps = async () => {
   const uri =
     'https://api.fitbit.com/1/user/-/activities/steps/date/today/30d.json'
 
@@ -10,24 +10,20 @@ const getSteps = () => {
     },
   }
 
-  return fetch(uri, options)
-    .then(response => response.json())
-    .then(data => {
-      if (!data['activities-steps']) {
-        throw new Error(`FitBit responded without a steps object`)
-      }
+  const response = await fetch(uri, options)
+  const data = await response.json()
 
-      let amount = 0
+  if (!data['activities-steps']) {
+    throw new Error(`FitBit responded without a steps object`)
+  }
 
-      data['activities-steps'].forEach(activity => {
-        amount += parseInt(activity.value, 10)
-      })
+  let amount = 0
 
-      return amount
-    })
-    .catch(error => {
-      throw new Error(error.message)
-    })
+  data['activities-steps'].forEach(activity => {
+    amount += parseInt(activity.value, 10)
+  })
+
+  return amount || null
 }
 
 module.exports = getSteps

@@ -1,31 +1,27 @@
 const fetch = require('../lib/fetchWithTimeout')
 const { thirtyDaysAgo } = require('../lib/date')
 
-const getPlaces = () => {
+const getPlaces = async () => {
   const uri = `https://api.foursquare.com/v2/users/self/checkins?oauth_token=${
     process.env.FOURSQUARE_KEY
   }&limit=250&afterTimestamp=${Math.floor(
     thirtyDaysAgo().getTime() / 1000
   )}&v=20180101&limit=250`
 
-  return fetch(uri)
-    .then(response => response.json())
-    .then(data => {
-      if (!data.response) {
-        throw new Error(`Foursquare responded without a response object`)
-      }
+  const response = await fetch(uri)
+  const data = await response.json()
 
-      let places = null
+  if (!data.response) {
+    throw new Error(`Foursquare responded without a response object`)
+  }
 
-      if (Object.keys(data.response).length !== 0) {
-        places = data.response.checkins.items.length
-      }
+  let places = null
 
-      return places
-    })
-    .catch(error => {
-      throw new Error(error.message)
-    })
+  if (Object.keys(data.response).length !== 0) {
+    places = data.response.checkins.items.length
+  }
+
+  return places
 }
 
 module.exports = getPlaces

@@ -1,7 +1,7 @@
 const fetch = require('../lib/fetchWithTimeout')
 const { thirtyDaysAgo } = require('../lib/date')
 
-const getCommits = () => {
+const getCommits = async () => {
   const query = `query recentCommits($date: GitTimestamp, $author: CommitAuthor) {
     viewer {
       repositories(first: 100) {
@@ -58,40 +58,36 @@ const getCommits = () => {
     },
   }
 
-  return fetch(`https://api.github.com/graphql`, options)
-    .then(response => response.json())
-    .then(({ data }) => {
-      if (!data) {
-        throw new Error(`GitHub responded without a data object`)
-      }
+  const response = await fetch(`https://api.github.com/graphql`, options)
+  const { data } = await response.json()
 
-      let amount = 0
+  if (!data || !data.viewer) {
+    throw new Error(`GitHub responded without a data object`)
+  }
 
-      data.viewer.repositories.nodes.forEach(node => {
-        if (node.ref) {
-          node.ref.target.history.edges.forEach(edge => {
-            if (edge.node.id) {
-              amount++
-            }
-          })
+  let amount = 0
+
+  data.viewer.repositories.nodes.forEach(node => {
+    if (node.ref) {
+      node.ref.target.history.edges.forEach(edge => {
+        if (edge.node.id) {
+          amount++
         }
       })
+    }
+  })
 
-      data.viewer.repositoriesContributedTo.nodes.forEach(node => {
-        if (node.ref) {
-          node.ref.target.history.edges.forEach(edge => {
-            if (edge.node.id) {
-              amount++
-            }
-          })
+  data.viewer.repositoriesContributedTo.nodes.forEach(node => {
+    if (node.ref) {
+      node.ref.target.history.edges.forEach(edge => {
+        if (edge.node.id) {
+          amount++
         }
       })
+    }
+  })
 
-      return amount
-    })
-    .catch(error => {
-      throw new Error(error.message)
-    })
+  return amount
 }
 
 module.exports = getCommits
