@@ -4,7 +4,7 @@
   "description": "Stats API for my about page",
   "main": "./graphql/index.js",
   "scripts": {
-    "start": "now-lambda",
+    "start": "now dev",
     "precommit": "lint-staged",
     "deploy": "now"
   },
@@ -14,15 +14,6 @@
   },
   "author": "Alec Lomas <alec@lowmess.com>",
   "license": "MIT",
-  "devDependencies": {
-    "dotenv": "^4.0.0",
-    "eslint": "^5.15.1",
-    "eslint-config-lowmess": "^2.2.2",
-    "husky": "^0.14.3",
-    "lint-staged": "^6.0.0",
-    "nodemon": "^1.11.0",
-    "prettier": "^1.16.4"
-  },
   "dependencies": {
     "abort-controller": "^2.0.3",
     "apollo-server-express": "^2.4.8",
@@ -32,6 +23,16 @@
     "graphql": "^14.1.1",
     "node-fetch": "^2.3.0",
     "xml2js": "^0.4.19"
+  },
+  "devDependencies": {
+    "dotenv": "^4.0.0",
+    "eslint": "^5.15.1",
+    "eslint-config-lowmess": "^2.2.2",
+    "husky": "^0.14.3",
+    "lint-staged": "^6.0.0",
+    "nodemon": "^1.11.0",
+    "now": "^15.0.11",
+    "prettier": "^1.16.4"
   },
   "lint-staged": {
     "*.js": [
