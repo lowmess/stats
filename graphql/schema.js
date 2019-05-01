@@ -1,7 +1,6 @@
 /* eslint-disable no-shadow */
 
 const { gql } = require('apollo-server-express')
-const dotenv = require('dotenv')
 const getCommits = require('./resolvers/commits')
 const getTweets = require('./resolvers/tweets')
 const getPlaces = require('./resolvers/places')
@@ -10,10 +9,6 @@ const getSleep = require('./resolvers/sleep')
 const getSongs = require('./resolvers/songs')
 const getAlbum = require('./resolvers/album')
 const getBooks = require('./resolvers/books')
-
-if (process.env.NODE_ENV !== 'production') {
-  dotenv.config()
-}
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`

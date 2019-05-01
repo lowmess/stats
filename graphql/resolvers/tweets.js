@@ -3,7 +3,7 @@ const { thirtyDaysAgo } = require('../lib/date')
 
 const thirtyDaysAgoTime = thirtyDaysAgo().getTime()
 
-const getTweets = (tweets = new Set(), maxId = false) => {
+const getTweets = async (tweets = new Set(), maxId = false) => {
   let uri =
     'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=lowmess&trim_user=1&exclude_replies=0&include_rts=1&count=50'
 
@@ -15,34 +15,32 @@ const getTweets = (tweets = new Set(), maxId = false) => {
     },
   }
 
-  const countTweets = response =>
-    response.json().then(data => {
-      if (data.errors) {
-        throw new Error(data.errors[0].message)
-      }
+  const response = await fetch(uri, options)
+  const data = await response.json()
 
-      let latestTweetTime = 0
-      let latestTweetId = 0
+  if (data.errors) {
+    throw new Error(data.errors[0].message)
+  }
 
-      data.forEach(tweet => {
-        const time = new Date(tweet.created_at).getTime()
+  let latestTweetTime = 0
+  let latestTweetId = 0
 
-        if (time > thirtyDaysAgoTime && !tweet.retweeted_status) {
-          tweets.add(tweet.id)
-        }
+  data.forEach(tweet => {
+    const time = new Date(tweet.created_at).getTime()
 
-        latestTweetTime = time
-        latestTweetId = tweet.id
-      })
+    if (time > thirtyDaysAgoTime && !tweet.retweeted_status) {
+      tweets.add(tweet.id)
+    }
 
-      if (latestTweetTime > thirtyDaysAgoTime) {
-        return getTweets(tweets, latestTweetId)
-      }
+    latestTweetTime = time
+    latestTweetId = tweet.id
+  })
 
-      return tweets.size
-    })
+  if (latestTweetTime > thirtyDaysAgoTime) {
+    return getTweets(tweets, latestTweetId)
+  }
 
-  return fetch(uri, options, countTweets)
+  return tweets.size
 }
 
 module.exports = getTweets

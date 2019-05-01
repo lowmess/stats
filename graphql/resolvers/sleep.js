@@ -2,7 +2,7 @@ const fetch = require('../lib/fetchWithTimeout')
 const format = require('date-fns/format')
 const { thirtyDaysAgo } = require('../lib/date')
 
-const getSleep = () => {
+const getSleep = async () => {
   const uri = `https://api.fitbit.com/1.2/user/-/sleep/date/${format(
     thirtyDaysAgo(),
     'YYYY-MM-DD'
@@ -14,26 +14,24 @@ const getSleep = () => {
     },
   }
 
-  const countSleep = response =>
-    response.json().then(data => {
-      if (!data.sleep) {
-        throw new Error(`FitBit responded without a sleep object`)
-      }
+  const response = await fetch(uri, options)
+  const data = await response.json()
 
-      let duration = null
+  if (!data.sleep) {
+    throw new Error(`FitBit responded without a sleep object`)
+  }
 
-      if (data.sleep) {
-        duration = 0
+  let duration = null
 
-        data.sleep.forEach(night => {
-          duration += night.duration / 1000 / 60 / 60
-        })
-      }
+  if (data.sleep) {
+    duration = 0
 
-      return duration
+    data.sleep.forEach(night => {
+      duration += night.duration / 1000 / 60 / 60
     })
+  }
 
-  return fetch(uri, options, countSleep)
+  return duration
 }
 
 module.exports = getSleep
