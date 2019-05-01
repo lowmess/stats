@@ -4,7 +4,7 @@ Little stats counters for [my about page](https://lowmess.com/about/)
 
 ### App secrets
 
-This pad contains some secret keys which you will need to provide as environment variables. Use `dotenv` to do that in development, and `now` secrets to do it in production.
+This pad contains some secret keys which you will need to provide as environment variables. Use [a `.env` to that locally](https://zeit.co/docs/v2/development/environment-variables/), and [`now` secrets to do it in production](https://zeit.co/docs/v2/deployments/environment-variables-and-secrets/).
 
 Here's the keys you need:
 
