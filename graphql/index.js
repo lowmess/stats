@@ -1,5 +1,6 @@
 const express = require('express')
 const { ApolloServer } = require('apollo-server-express')
+const responseCachePlugin = require('apollo-server-plugin-response-cache')
 const { typeDefs, resolvers } = require('./schema')
 
 // Check for secrets
@@ -82,6 +83,8 @@ if (process.env.NODE_ENV === 'production') {
       },
     ],
   }
+
+  config.plugins = [responseCachePlugin()]
 }
 
 const server = new ApolloServer(config)
