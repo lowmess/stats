@@ -28,7 +28,6 @@
     "NODE_ENV": "production",
     "ENGINE_API_KEY": "@apollo_key",
     "GITHUB_KEY": "@github_key",
-    "GITHUB_ID": "@github_id",
     "TWITTER_KEY": "@twitter_key",
     "LASTFM_KEY": "@lastfm_key",
     "LASTFM_USERNAME": "@lastfm_username",

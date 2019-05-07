@@ -16,7 +16,8 @@
   "license": "MIT",
   "dependencies": {
     "abort-controller": "^2.0.3",
-    "apollo-server-express": "^2.4.8",
+    "apollo-server-express": "^2.5.0",
+    "apollo-server-plugin-response-cache": "^0.1.0",
     "babel-eslint": "^10.0.1",
     "date-fns": "^1.29.0",
     "express": "^4.16.4",

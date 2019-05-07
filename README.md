@@ -10,7 +10,6 @@ Here's the keys you need:
 
 - `ENGINE_API_KEY` - Apollo Engine API key (optional)
 - `GITHUB_KEY` - GitHub personal access token
-- `GITHUB_ID` - GitHub user ID to find commits for
 - `TWITTER_KEY` - Twitter OAuth bearer token
 - `LASTFM_KEY` - Last.fm OAuth token
 - `LASTFM_USERNAME` - Last.fm username to look up
