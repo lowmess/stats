@@ -1,7 +1,7 @@
-const fetch = require('../lib/fetchWithTimeout')
-const { thirtyDaysAgo } = require('../lib/date')
+import fetch from '../lib/fetchWithTimeout'
+import { thirtyDaysAgo } from '../lib/date'
 
-const getPlaces = async () => {
+const getPlaces = async (): Promise<number> => {
   const uri = `https://api.foursquare.com/v2/users/self/checkins?oauth_token=${
     process.env.FOURSQUARE_KEY
   }&limit=250&afterTimestamp=${Math.floor(
@@ -24,4 +24,4 @@ const getPlaces = async () => {
   return places
 }
 
-module.exports = getPlaces
+export default getPlaces

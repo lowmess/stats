@@ -1,14 +1,14 @@
 /* eslint-disable no-shadow */
 
-const { gql } = require('apollo-server-express')
-const getCommits = require('./resolvers/commits')
-const getTweets = require('./resolvers/tweets')
-const getPlaces = require('./resolvers/places')
-const getSteps = require('./resolvers/steps')
-const getSleep = require('./resolvers/sleep')
-const getSongs = require('./resolvers/songs')
-const getAlbum = require('./resolvers/album')
-const getBooks = require('./resolvers/books')
+import { gql } from 'apollo-server-express'
+import getCommits from './resolvers/commits'
+import getTweets from './resolvers/tweets'
+import getPlaces from './resolvers/places'
+import getSteps from './resolvers/steps'
+import getSleep from './resolvers/sleep'
+import getSongs from './resolvers/songs'
+import getAlbum from './resolvers/album'
+import getBooks from './resolvers/books'
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
@@ -118,4 +118,4 @@ const resolvers = {
   },
 }
 
-module.exports = { typeDefs, resolvers }
+export { typeDefs, resolvers }

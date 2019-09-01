@@ -1,12 +1,16 @@
-const fetch = require('../lib/fetchWithTimeout')
-const format = require('date-fns/format')
-const { thirtyDaysAgo } = require('../lib/date')
+import fetch from '../lib/fetchWithTimeout'
+import format from 'date-fns/format'
+import { thirtyDaysAgo } from '../lib/date'
 
-const getSleep = async () => {
+interface Night {
+  duration: number
+}
+
+const getSleep = async (): Promise<number> => {
   const uri = `https://api.fitbit.com/1.2/user/-/sleep/date/${format(
     thirtyDaysAgo(),
-    'YYYY-MM-DD'
-  )}/${format(Date.now(), 'YYYY-MM-DD')}.json`
+    'yyyy-MM-dd'
+  )}/${format(Date.now(), 'yyyy-MM-dd')}.json`
 
   const options = {
     headers: {
@@ -21,12 +25,12 @@ const getSleep = async () => {
     throw new Error(`FitBit responded without a sleep object`)
   }
 
-  let duration = null
+  let duration: number = null
 
   if (data.sleep) {
     duration = 0
 
-    data.sleep.forEach(night => {
+    data.sleep.forEach((night: Night) => {
       duration += night.duration / 1000 / 60 / 60
     })
   }
@@ -34,4 +38,4 @@ const getSleep = async () => {
   return duration
 }
 
-module.exports = getSleep
+export default getSleep

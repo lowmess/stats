@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "baseUrl": "graphql/",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es6",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "paths": {
+      "*": ["../node_modules/*", "types/*"]
+    }
+  },
+  "include": ["graphql/**/*"]
+}

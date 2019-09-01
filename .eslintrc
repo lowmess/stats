@@ -4,6 +4,12 @@
     "node": true,
     "browser": true
   },
+  "overrides": [
+    {
+      "files": ["**/*.ts"],
+      "extends": "lowmess/typescript"
+    }
+  ],
   "rules": {
     "no-console": 0
   }

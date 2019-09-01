@@ -1,7 +1,7 @@
-const fetch = require('../lib/fetchWithTimeout')
-const { thirtyDaysAgo } = require('../lib/date')
+import fetch from '../lib/fetchWithTimeout'
+import { thirtyDaysAgo } from '../lib/date'
 
-const getSongs = async () => {
+const getSongs = async (): Promise<number> => {
   const uri = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&limit=1&user=${
     process.env.LASTFM_USERNAME
   }&from=${Math.floor(thirtyDaysAgo().getTime() / 1000)}&to=${Math.floor(
@@ -18,4 +18,4 @@ const getSongs = async () => {
   return data.recenttracks['@attr'].total
 }
 
-module.exports = getSongs
+export default getSongs

@@ -1,6 +1,10 @@
-const fetch = require('../lib/fetchWithTimeout')
+import fetch from '../lib/fetchWithTimeout'
 
-const getSteps = async () => {
+interface Activity {
+  value: string
+}
+
+const getSteps = async (): Promise<number> => {
   const uri =
     'https://api.fitbit.com/1/user/-/activities/steps/date/today/30d.json'
 
@@ -19,11 +23,11 @@ const getSteps = async () => {
 
   let amount = 0
 
-  data['activities-steps'].forEach(activity => {
+  data['activities-steps'].forEach((activity: Activity) => {
     amount += parseInt(activity.value, 10)
   })
 
   return amount || null
 }
 
-module.exports = getSteps
+export default getSteps
