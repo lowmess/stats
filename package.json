@@ -5,7 +5,6 @@
   "main": "./graphql/index.js",
   "scripts": {
     "start": "now dev",
-    "precommit": "lint-staged",
     "deploy": "now"
   },
   "repository": {
@@ -32,6 +31,11 @@
     "now": "^16.1.2",
     "prettier": "^1.18.2",
     "prettier-config-lowmess": "^0.1.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "*.js": [
