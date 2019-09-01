@@ -2,13 +2,14 @@
   "extends": "lowmess",
   "env": {
     "node": true,
-    "browser": true,
-    "es6": true
+    "browser": true
   },
-  "parser": "babel-eslint",
-  "parserOptions": {
-    "ecmaVersion": 6
-  },
+  "overrides": [
+    {
+      "files": ["**/*.ts"],
+      "extends": "lowmess/typescript"
+    }
+  ],
   "rules": {
     "no-console": 0
   }

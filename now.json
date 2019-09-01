@@ -4,7 +4,7 @@
   "alias": ["stats.lowmess.com", "lowmess-stats.now.sh"],
   "builds": [
     {
-      "src": "graphql/index.js",
+      "src": "graphql/index.ts",
       "use": "@now/node"
     },
     {
@@ -16,7 +16,7 @@
     {
       "src": "/graphql",
       "headers": { "Cache-Control": "s-maxage=3600" },
-      "dest": "/graphql/index.js"
+      "dest": "/graphql/index.ts"
     },
     {
       "src": "/(.*)",

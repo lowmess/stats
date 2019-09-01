@@ -1,7 +1,7 @@
-const express = require('express')
-const { ApolloServer } = require('apollo-server-express')
-const responseCachePlugin = require('apollo-server-plugin-response-cache')
-const { typeDefs, resolvers } = require('./schema')
+import express from 'express'
+import { ApolloServer, Config } from 'apollo-server-express'
+import responseCachePlugin from 'apollo-server-plugin-response-cache'
+import { typeDefs, resolvers } from './schema'
 
 // Check for secrets
 if (typeof process.env.GITHUB_KEY === 'undefined') {
@@ -65,7 +65,7 @@ const defaultQuery = `{
 // Set up Express
 const app = express()
 
-const config = {
+const config: Config = {
   typeDefs,
   resolvers,
   cacheControl: true,
@@ -96,4 +96,4 @@ server.applyMiddleware({
 
 app.listen()
 
-module.exports = app
+export default app

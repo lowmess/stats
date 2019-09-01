@@ -1,7 +1,7 @@
-const fetch = require('../lib/fetchWithTimeout')
-const { thirtyDaysAgo } = require('../lib/date')
+import fetch from '../lib/fetchWithTimeout'
+import { thirtyDaysAgo } from '../lib/date'
 
-const getCommits = async () => {
+const getCommits = async (): Promise<number> => {
   const query = `query recentCommits($date: DateTime) {
     viewer {
       contributionsCollection(from: $date) {
@@ -36,4 +36,4 @@ const getCommits = async () => {
   return data.viewer.contributionsCollection.totalCommitContributions
 }
 
-module.exports = getCommits
+export default getCommits

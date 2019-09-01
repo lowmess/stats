@@ -5,7 +5,6 @@
   "main": "./graphql/index.js",
   "scripts": {
     "start": "now dev",
-    "precommit": "lint-staged",
     "deploy": "now"
   },
   "repository": {
@@ -15,24 +14,33 @@
   "author": "Alec Lomas <alec@lowmess.com>",
   "license": "MIT",
   "dependencies": {
-    "abort-controller": "^2.0.3",
-    "apollo-server-express": "^2.5.0",
-    "apollo-server-plugin-response-cache": "^0.1.0",
-    "babel-eslint": "^10.0.1",
-    "date-fns": "^1.29.0",
-    "express": "^4.16.4",
-    "graphql": "^14.1.1",
-    "node-fetch": "^2.3.0",
+    "@types/express": "^4.17.1",
+    "@types/node": "^12.7.3",
+    "@types/node-fetch": "^2.5.0",
+    "@types/xml2js": "^0.4.4",
+    "abort-controller": "^3.0.0",
+    "apollo-server-express": "^2.9.2",
+    "apollo-server-plugin-response-cache": "^0.1.1",
+    "date-fns": "^2.0.1",
+    "express": "^4.17.1",
+    "graphql": "^14.5.4",
+    "node-fetch": "^2.6.0",
+    "typescript": "^3.6.2",
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
-    "eslint": "^5.15.1",
-    "eslint-config-lowmess": "^2.2.2",
-    "husky": "^0.14.3",
-    "lint-staged": "^6.0.0",
-    "nodemon": "^1.11.0",
-    "now": "^15.0.11",
-    "prettier": "^1.16.4"
+    "eslint": "^6.3.0",
+    "eslint-config-lowmess": "^3.1.0",
+    "husky": "^3.0.4",
+    "lint-staged": "^9.2.5",
+    "now": "^16.1.2",
+    "prettier": "^1.18.2",
+    "prettier-config-lowmess": "^0.1.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "*.js": [

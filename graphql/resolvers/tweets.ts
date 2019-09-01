@@ -1,9 +1,18 @@
-const fetch = require('../lib/fetchWithTimeout')
-const { thirtyDaysAgo } = require('../lib/date')
+import fetch from '../lib/fetchWithTimeout'
+import { thirtyDaysAgo } from '../lib/date'
+
+interface Tweet {
+  id: number
+  created_at: string
+  retweeted_status: boolean
+}
 
 const thirtyDaysAgoTime = thirtyDaysAgo().getTime()
 
-const getTweets = async (tweets = new Set(), maxId = false) => {
+const getTweets = async (
+  tweets: Set<number> = new Set(),
+  maxId: number = 0
+): Promise<number> => {
   let uri =
     'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=lowmess&trim_user=1&exclude_replies=0&include_rts=1&count=50'
 
@@ -25,7 +34,7 @@ const getTweets = async (tweets = new Set(), maxId = false) => {
   let latestTweetTime = 0
   let latestTweetId = 0
 
-  data.forEach(tweet => {
+  data.forEach((tweet: Tweet) => {
     const time = new Date(tweet.created_at).getTime()
 
     if (time > thirtyDaysAgoTime && !tweet.retweeted_status) {
@@ -43,4 +52,4 @@ const getTweets = async (tweets = new Set(), maxId = false) => {
   return tweets.size
 }
 
-module.exports = getTweets
+export default getTweets
