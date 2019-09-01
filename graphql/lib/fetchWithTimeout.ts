@@ -1,10 +1,10 @@
 import fetch, { RequestInit, Response } from 'node-fetch'
-import AbortController from 'abort-controller'
+import { AbortController } from 'abort-controller'
 
 const fetchWithTimeout = async (
   uri: string,
   options: RequestInit = {},
-  time: number = 5000
+  time = 5000
 ): Promise<Response> => {
   const controller = new AbortController()
   const config: RequestInit = { ...options, signal: controller.signal }

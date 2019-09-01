@@ -1,6 +1,6 @@
 import fetch from '../lib/fetchWithTimeout'
 
-interface AlbumInfo {
+export interface AlbumInfo {
   readonly name: string
   readonly artist: string
 }

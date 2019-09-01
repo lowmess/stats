@@ -2,16 +2,16 @@ import fetch from '../lib/fetchWithTimeout'
 import { thirtyDaysAgo } from '../lib/date'
 
 interface Tweet {
-  id: number
-  created_at: string
-  retweeted_status: boolean
+  readonly id: number
+  readonly created_at: string
+  readonly retweeted_status: boolean
 }
 
 const thirtyDaysAgoTime = thirtyDaysAgo().getTime()
 
 const getTweets = async (
   tweets: Set<number> = new Set(),
-  maxId: number = 0
+  maxId?: number
 ): Promise<number> => {
   let uri =
     'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=lowmess&trim_user=1&exclude_replies=0&include_rts=1&count=50'

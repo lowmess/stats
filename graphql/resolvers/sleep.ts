@@ -3,7 +3,7 @@ import format from 'date-fns/format'
 import { thirtyDaysAgo } from '../lib/date'
 
 interface Night {
-  duration: number
+  readonly duration: number
 }
 
 const getSleep = async (): Promise<number> => {

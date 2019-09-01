@@ -7,8 +7,8 @@ import getPlaces from './resolvers/places'
 import getSteps from './resolvers/steps'
 import getSleep from './resolvers/sleep'
 import getSongs from './resolvers/songs'
-import getAlbum from './resolvers/album'
-import getBooks from './resolvers/books'
+import getAlbum, { AlbumInfo } from './resolvers/album'
+import getBooks, { Book } from './resolvers/books'
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
@@ -38,7 +38,7 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     // GitHub Commits
-    commits: async () => {
+    commits: async (): Promise<number> => {
       try {
         const commits = await getCommits()
         return commits
@@ -48,7 +48,7 @@ const resolvers = {
       }
     },
     // Tweets
-    tweets: async () => {
+    tweets: async (): Promise<number> => {
       try {
         const tweets = await getTweets()
         return tweets
@@ -58,7 +58,7 @@ const resolvers = {
       }
     },
     // Foursquare places
-    places: async () => {
+    places: async (): Promise<number> => {
       try {
         const places = await getPlaces()
         return places
@@ -68,7 +68,7 @@ const resolvers = {
       }
     },
     // FitBit steps & hours slept
-    steps: async () => {
+    steps: async (): Promise<number> => {
       try {
         const steps = await getSteps()
         return steps
@@ -77,7 +77,7 @@ const resolvers = {
         return null
       }
     },
-    sleep: async () => {
+    sleep: async (): Promise<number> => {
       try {
         const sleep = await getSleep()
         return sleep
@@ -87,7 +87,7 @@ const resolvers = {
       }
     },
     // Last.fm top album & total songs
-    songs: async () => {
+    songs: async (): Promise<number> => {
       try {
         const songs = await getSongs()
         return songs
@@ -96,7 +96,7 @@ const resolvers = {
         return null
       }
     },
-    album: async () => {
+    album: async (): Promise<AlbumInfo> => {
       try {
         const album = await getAlbum()
         return album
@@ -106,7 +106,7 @@ const resolvers = {
       }
     },
     // Goodreads book
-    books: async () => {
+    books: async (): Promise<Book[]> => {
       try {
         const books = await getBooks()
         return books
