@@ -2,9 +2,9 @@ import fetch from '../lib/fetchWithTimeout'
 import { thirtyDaysAgo } from '../lib/date'
 
 interface Tweet {
-  id: number
-  created_at: string
-  retweeted_status: boolean
+  readonly id: number
+  readonly created_at: string
+  readonly retweeted_status: boolean
 }
 
 const thirtyDaysAgoTime = thirtyDaysAgo().getTime()

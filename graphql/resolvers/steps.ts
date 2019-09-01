@@ -1,7 +1,7 @@
 import fetch from '../lib/fetchWithTimeout'
 
 interface Activity {
-  value: string
+  readonly value: string
 }
 
 const getSteps = async (): Promise<number> => {
