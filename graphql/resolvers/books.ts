@@ -1,9 +1,27 @@
 import fetch from '../lib/fetchWithTimeout'
 import xml2js from 'xml2js'
 
-interface Book {
+export interface Book {
   readonly name: string
   readonly author: string
+}
+
+// this insane bullshit is 100% goodreads fault. also what `xml2js` spits out.
+interface BookResponse {
+  book: [
+    {
+      title: string[]
+      authors: [
+        {
+          author: [
+            {
+              name: string[]
+            }
+          ]
+        }
+      ]
+    }
+  ]
 }
 
 const getBooks = async (): Promise<Book[]> => {
@@ -23,9 +41,7 @@ const getBooks = async (): Promise<Book[]> => {
       throw new Error(`Goodreads responded without a response object`)
     }
 
-    // explicitly setting book to any here, because I don't want to type out
-    // this insanely bullshit format that `xml2js` spits out. fuckin goodreads
-    result.goodreadsresponse.reviews[0].review.forEach((book: any) => {
+    result.goodreadsresponse.reviews[0].review.forEach((book: BookResponse) => {
       const name = book.book[0].title[0]
       const author = book.book[0].authors[0].author[0].name[0]
       books.push({ name, author })
