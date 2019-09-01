@@ -11,7 +11,7 @@ const thirtyDaysAgoTime = thirtyDaysAgo().getTime()
 
 const getTweets = async (
   tweets: Set<number> = new Set(),
-  maxId: number = 0
+  maxId: number
 ): Promise<number> => {
   let uri =
     'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=lowmess&trim_user=1&exclude_replies=0&include_rts=1&count=50'
