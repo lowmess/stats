@@ -29,7 +29,7 @@ const getCommits = async (): Promise<number> => {
   const response = await fetch(`https://api.github.com/graphql`, options)
   const { data } = await response.json()
 
-  if (!data || !data.viewer) {
+  if (!data?.viewer) {
     throw new Error(`GitHub responded without a data object`)
   }
 
