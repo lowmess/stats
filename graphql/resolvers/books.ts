@@ -1,10 +1,5 @@
-import fetch from '../lib/fetchWithTimeout'
 import xml2js from 'xml2js'
-
-export interface Book {
-  readonly name: string
-  readonly author: string
-}
+import fetch from '../lib/fetchWithTimeout'
 
 // this insane bullshit is 100% goodreads fault. also what `xml2js` spits out.
 interface BookResponse {
@@ -49,6 +44,11 @@ const getBooks = async (): Promise<Book[]> => {
   })
 
   return books
+}
+
+export interface Book {
+  readonly name: string
+  readonly author: string
 }
 
 export default getBooks
