@@ -13,7 +13,7 @@ Here's the keys you need:
 - `TWITTER_KEY` - Twitter OAuth bearer token
 - `LASTFM_KEY` - Last.fm OAuth token
 - `LASTFM_USERNAME` - Last.fm username to look up
-- `FITBIT_KEY` - Fitbit OAuth token
+- `WITHINGS_KEY` - Withings OAuth token
 - `GOODREADS_KEY` - Goodreads API key
 - `GOODREADS_ID` - Goodreads user ID to look up
 - `FOURSQUARE_KEY` - Foursquare OAuth token

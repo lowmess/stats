@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "lowmess-stats",
   "alias": ["stats.lowmess.com", "lowmess-stats.now.sh"],
   "builds": [
     {
@@ -31,7 +30,7 @@
     "TWITTER_KEY": "@twitter_key",
     "LASTFM_KEY": "@lastfm_key",
     "LASTFM_USERNAME": "@lastfm_username",
-    "FITBIT_KEY": "@fitbit_key",
+    "WITHINGS_KEY": "@withings_key",
     "GOODREADS_KEY": "@goodreads_key",
     "GOODREADS_ID": "@goodreads_id",
     "FOURSQUARE_KEY": "@foursquare_key"
