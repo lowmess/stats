@@ -1,30 +1,34 @@
+import format from 'date-fns/format'
 import fetch from '../lib/fetchWithTimeout'
+import { thirtyDaysAgo } from '../lib/date'
 
 interface Activity {
-  readonly value: string
+  readonly steps: number
 }
 
 const getSteps = async (): Promise<number> => {
-  const uri =
-    'https://api.fitbit.com/1/user/-/activities/steps/date/today/30d.json'
+  const uri = `https://wbsapi.withings.net/v2/measure?action=getactivity&startdateymd=${format(
+    thirtyDaysAgo(),
+    'yyyy-MM-dd'
+  )}&enddateymd=${format(Date.now(), 'yyyy-MM-dd')}&data_fields=steps`
 
   const options = {
     headers: {
-      Authorization: `Bearer ${process.env.FITBIT_KEY}`,
+      Authorization: `Bearer ${process.env.WITHINGS_KEY}`,
     },
   }
 
   const response = await fetch(uri, options)
   const data = await response.json()
 
-  if (!data['activities-steps']) {
-    throw new Error(`FitBit responded without a steps object`)
+  if (!data?.body?.activities) {
+    throw new Error(`Withings did not provide steps data in their response`)
   }
 
   let amount = 0
 
-  data['activities-steps'].forEach((activity: Activity) => {
-    amount += parseInt(activity.value, 10)
+  data.body.activities.forEach((activity: Activity) => {
+    amount += activity.steps
   })
 
   return amount || null
