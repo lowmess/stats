@@ -24,9 +24,9 @@ if (typeof process.env.LASTFM_USERNAME === 'undefined') {
     'WARNING: process.env.LASTFM_USERNAME is not defined. Check README.md for more information'
   )
 }
-if (typeof process.env.FITBIT_KEY === 'undefined') {
+if (typeof process.env.WITHINGS_KEY === 'undefined') {
   console.warn(
-    'WARNING: process.env.FITBIT_KEY is not defined. Check README.md for more information'
+    'WARNING: process.env.WITHINGS_KEY is not defined. Check README.md for more information'
   )
 }
 if (typeof process.env.GOODREADS_KEY === 'undefined') {
