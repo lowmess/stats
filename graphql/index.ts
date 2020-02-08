@@ -50,7 +50,6 @@ const defaultQuery = `{
   tweets
   places
   steps
-  sleep
   songs
   album {
     name

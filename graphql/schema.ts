@@ -5,7 +5,6 @@ import getCommits from './resolvers/commits'
 import getTweets from './resolvers/tweets'
 import getPlaces from './resolvers/places'
 import getSteps from './resolvers/steps'
-import getSleep from './resolvers/sleep'
 import getSongs from './resolvers/songs'
 import getAlbum, { AlbumInfo } from './resolvers/album'
 import getBooks, { Book } from './resolvers/books'
@@ -27,7 +26,6 @@ const typeDefs = gql`
     tweets: Int @cacheControl(maxAge: 3600)
     places: Int @cacheControl(maxAge: 86400)
     steps: Int @cacheControl(maxAge: 3600)
-    sleep: Float @cacheControl(maxAge: 86400)
     songs: Int @cacheControl(maxAge: 3600)
     album: Album @cacheControl(maxAge: 3600)
     books: [Book] @cacheControl(maxAge: 86400)
@@ -72,15 +70,6 @@ const resolvers = {
       try {
         const steps = await getSteps()
         return steps
-      } catch (error) {
-        console.error(error.message ? error.message : error)
-        return null
-      }
-    },
-    sleep: async (): Promise<number> => {
-      try {
-        const sleep = await getSleep()
-        return sleep
       } catch (error) {
         console.error(error.message ? error.message : error)
         return null

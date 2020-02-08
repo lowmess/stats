@@ -26,7 +26,6 @@ const query = `
     tweets
     places
     steps
-    sleep
     songs
     album {
       name
@@ -56,10 +55,6 @@ fetch('/graphql', {
       if (json.data.places) stat('places', json.data.places.toLocaleString())
       // Steps
       if (json.data.steps) stat('steps', json.data.steps.toLocaleString())
-      // Sleep
-      if (json.data.sleep) {
-        stat('sleep', parseFloat(json.data.sleep.toFixed(2).toLocaleString()))
-      }
       // Songs
       if (json.data.songs) stat('songs', json.data.songs.toLocaleString())
       // Album
