@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "lowmess-stats",
   "alias": ["stats.lowmess.com", "lowmess-stats.now.sh"],
   "builds": [
     {
