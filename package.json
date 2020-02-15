@@ -2,7 +2,7 @@
   "name": "stats",
   "version": "3.0.0",
   "description": "Stats API for my about page",
-  "main": "./graphql/index.js",
+  "main": "./graphql/index.ts",
   "engines": {
     "node": "12.x"
   },
@@ -46,6 +46,7 @@
     }
   },
   "lint-staged": {
+    "*.ts": "tsc -p --noEmit",
     "*.{js,ts}": [
       "eslint --fix",
       "prettier --write",
