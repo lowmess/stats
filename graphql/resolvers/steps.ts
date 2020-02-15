@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/camelcase */
+
 import format from 'date-fns/format'
 import fetch from '../lib/fetchWithTimeout'
 import { thirtyDaysAgo } from '../lib/date'
