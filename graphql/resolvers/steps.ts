@@ -50,6 +50,7 @@ const getSteps = async (): Promise<number> => {
   const data = await response.json()
 
   if (data.status === 401) {
+    console.log('Refreshing Withings Access Token...') // eslint-disable-line no-console
     await getNewToken()
     return getSteps()
   }

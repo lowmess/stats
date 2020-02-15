@@ -46,7 +46,7 @@
     }
   },
   "lint-staged": {
-    "*.ts": "tsc -p --noEmit",
+    "*.ts": "tsc --pretty --noEmit",
     "*.{js,ts}": [
       "eslint --fix",
       "prettier --write",
