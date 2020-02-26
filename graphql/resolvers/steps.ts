@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
+import { URLSearchParams } from 'url'
 import format from 'date-fns/format'
 import fetch from '../lib/fetchWithTimeout'
 import { thirtyDaysAgo } from '../lib/date'
@@ -17,14 +18,19 @@ let refreshToken = process.env.WITHINGS_REFRESH_KEY
 const getNewToken = async (): Promise<void> => {
   const uri = 'https://account.withings.com/oauth2/token'
 
+  const params = new URLSearchParams()
+
+  params.append('grant_type', 'refresh_token')
+  params.append('client_id', process.env.WITHINGS_CLIENT_ID)
+  params.append('client_secret', process.env.WITHINGS_CLIENT_SECRET)
+  params.append('refresh_token', refreshToken)
+
   const options = {
     method: 'POST',
-    body: JSON.stringify({
-      grant_type: 'refresh_token',
-      client_id: process.env.WITHINGS_CLIENT_ID,
-      client_secret: process.env.WITHINGS_CLIENT_SECRET,
-      refresh_token: refreshToken,
-    }),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: params.toString(),
   }
 
   const response = await fetch(uri, options)
@@ -50,7 +56,6 @@ const getSteps = async (): Promise<number> => {
   const data = await response.json()
 
   if (data.status === 401) {
-    console.log('Refreshing Withings Access Token...') // eslint-disable-line no-console
     await getNewToken()
     return getSteps()
   }
