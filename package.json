@@ -50,12 +50,10 @@
     "*.ts": "tsc --pretty --noEmit",
     "*.{js,ts}": [
       "eslint --fix",
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ],
     "*.{md,json}": [
-      "prettier --write",
-      "git add"
+      "prettier --write"
     ]
   }
 }
