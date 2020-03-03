@@ -8,7 +8,9 @@
   },
   "scripts": {
     "start": "now dev",
-    "deploy": "now"
+    "deploy": "now",
+    "lint-staged": "lint-staged",
+    "typecheck": "tsc -p tsconfig.json --pretty --noEmit"
   },
   "repository": {
     "type": "git",
@@ -43,11 +45,10 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "npm run lint-staged && npm run typecheck"
     }
   },
   "lint-staged": {
-    "*.ts": "tsc --pretty --noEmit",
     "*.{js,ts}": [
       "eslint --fix",
       "prettier --write"
