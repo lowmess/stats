@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
 import { URLSearchParams } from 'url'
+import NodeCache from 'node-cache'
 import format from 'date-fns/format'
+import { WITHINGS_KEY, WITHINGS_REFRESH_KEY } from '../schema'
 import fetch from '../lib/fetchWithTimeout'
 import { thirtyDaysAgo } from '../lib/date'
 
@@ -9,13 +11,7 @@ interface Activity {
   readonly steps: number
 }
 
-// This is probably not the best way to do this, since I'll have to re-generate
-// new tokens for each deploy. But I also don't want to run a server just to
-// generate & store these tokens.
-let accessToken = process.env.WITHINGS_KEY
-let refreshToken = process.env.WITHINGS_REFRESH_KEY
-
-const getNewToken = async (): Promise<void> => {
+const getNewToken = async (cache: NodeCache): Promise<void> => {
   const uri = 'https://account.withings.com/oauth2/token'
 
   const params = new URLSearchParams()
@@ -23,7 +19,7 @@ const getNewToken = async (): Promise<void> => {
   params.append('grant_type', 'refresh_token')
   params.append('client_id', process.env.WITHINGS_CLIENT_ID)
   params.append('client_secret', process.env.WITHINGS_CLIENT_SECRET)
-  params.append('refresh_token', refreshToken)
+  params.append('refresh_token', cache.get(WITHINGS_REFRESH_KEY))
 
   const options = {
     method: 'POST',
@@ -36,11 +32,11 @@ const getNewToken = async (): Promise<void> => {
   const response = await fetch(uri, options)
   const data = await response.json()
 
-  accessToken = data.access_token
-  refreshToken = data.refresh_token // eslint-disable-line require-atomic-updates
+  cache.set(WITHINGS_KEY, data.access_token)
+  cache.set(WITHINGS_REFRESH_KEY, data.refresh_token)
 }
 
-const getSteps = async (): Promise<number> => {
+const getSteps = async (cache: NodeCache): Promise<number> => {
   const uri = `https://wbsapi.withings.net/v2/measure?action=getactivity&startdateymd=${format(
     thirtyDaysAgo(),
     'yyyy-MM-dd'
@@ -48,7 +44,7 @@ const getSteps = async (): Promise<number> => {
 
   const options = {
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${cache.get(WITHINGS_KEY)}`,
     },
   }
 
@@ -56,8 +52,8 @@ const getSteps = async (): Promise<number> => {
   const data = await response.json()
 
   if (data.status === 401) {
-    await getNewToken()
-    return getSteps()
+    await getNewToken(cache)
+    return getSteps(cache)
   }
 
   if (!data?.body?.activities) {
