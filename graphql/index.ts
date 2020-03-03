@@ -3,48 +3,6 @@ import { ApolloServer, Config } from 'apollo-server-express'
 import responseCachePlugin from 'apollo-server-plugin-response-cache'
 import { typeDefs, resolvers } from './schema'
 
-// Check for secrets
-if (typeof process.env.GITHUB_KEY === 'undefined') {
-  console.warn(
-    'WARNING: process.env.GITHUB_KEY is not defined. Check README.md for more information'
-  )
-}
-if (typeof process.env.GITHUB_ID === 'undefined') {
-  console.warn(
-    'WARNING: process.env.GITHUB_ID is not defined. Check README.md for more information'
-  )
-}
-if (typeof process.env.LASTFM_KEY === 'undefined') {
-  console.warn(
-    'WARNING: process.env.LASTFM_KEY is not defined. Check README.md for more information'
-  )
-}
-if (typeof process.env.LASTFM_USERNAME === 'undefined') {
-  console.warn(
-    'WARNING: process.env.LASTFM_USERNAME is not defined. Check README.md for more information'
-  )
-}
-if (typeof process.env.WITHINGS_KEY === 'undefined') {
-  console.warn(
-    'WARNING: process.env.WITHINGS_KEY is not defined. Check README.md for more information'
-  )
-}
-if (typeof process.env.GOODREADS_KEY === 'undefined') {
-  console.warn(
-    'WARNING: process.env.GOODREADS_KEY is not defined. Check README.md for more information'
-  )
-}
-if (typeof process.env.GOODREADS_ID === 'undefined') {
-  console.warn(
-    'WARNING: process.env.GOODREADS_ID is not defined. Check README.md for more information'
-  )
-}
-if (typeof process.env.FOURSQUARE_KEY === 'undefined') {
-  console.warn(
-    'WARNING: process.env.FOURSQUARE_KEY is not defined. Check README.md for more information'
-  )
-}
-
 const defaultQuery = `{
   commits
   tweets
