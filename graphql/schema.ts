@@ -1,6 +1,5 @@
 /* eslint-disable no-shadow */
 
-import NodeCache from 'node-cache'
 import { gql } from 'apollo-server-express'
 import getCommits from './resolvers/commits'
 import getTweets from './resolvers/tweets'
@@ -9,14 +8,6 @@ import getSteps from './resolvers/steps'
 import getSongs from './resolvers/songs'
 import getAlbum, { AlbumInfo } from './resolvers/album'
 import getBooks, { Book } from './resolvers/books'
-
-const cache = new NodeCache()
-
-const WITHINGS_KEY = 'withings_key'
-const WITHINGS_REFRESH_KEY = 'withings_refresh_key'
-
-cache.set(WITHINGS_KEY, process.env.WITHINGS_KEY)
-cache.set(WITHINGS_REFRESH_KEY, process.env.WITHINGS_REFRESH_KEY)
 
 // Construct a schema, using GraphQL schema language
 const typeDefs = gql`
@@ -77,7 +68,7 @@ const resolvers = {
     // FitBit steps & hours slept
     steps: async (): Promise<number> => {
       try {
-        const steps = await getSteps(cache)
+        const steps = await getSteps()
         return steps
       } catch (error) {
         console.error(error.message ? error.message : error)
@@ -116,4 +107,4 @@ const resolvers = {
   },
 }
 
-export { typeDefs, resolvers, WITHINGS_KEY, WITHINGS_REFRESH_KEY }
+export { typeDefs, resolvers }
