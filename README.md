@@ -24,7 +24,7 @@ Here's the keys you need:
 
 ---
 
-** Why do I need AWS credentials?**
+**Why do I need AWS credentials?**
 
 Because Withings sucks. Unlike the other services here, the OAuth tokens Withings provides has an exceedingly short lifespan (about 3 hours). This means that we need a way to store and update those tokens more than the occassional redeploy with new keys. If I was developing this from scratch, instead of updating my previous work (the first version of this API used FitBit, but I wanted a nicer watch smh), I would likely just make a full-on server with database instead of this half-serverless thing I've got going on.
 
