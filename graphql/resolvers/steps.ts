@@ -1,21 +1,71 @@
 /* eslint-disable @typescript-eslint/camelcase */
 
 import { URLSearchParams } from 'url'
+import aws from 'aws-sdk'
 import format from 'date-fns/format'
 import fetch from '../lib/fetchWithTimeout'
 import { thirtyDaysAgo } from '../lib/date'
+
+aws.config.update({
+  accessKeyId: process.env.AWS_ACCESS,
+  secretAccessKey: process.env.AWS_SECRET,
+  region: 'us-west-1',
+})
+
+const s3 = new aws.S3()
+
+interface WithingsConfig {
+  access_token: string
+  refresh_token: string
+}
+
+const getWithings = (): Promise<WithingsConfig> => {
+  return new Promise((resolve, reject) => {
+    s3.getObject(
+      {
+        Bucket: process.env.AWS_BUCKET,
+        Key: 'withings.json',
+      },
+      (error, data) => {
+        if (error) {
+          reject(error)
+        } else {
+          const config = JSON.parse(data.Body.toString())
+          resolve(config)
+        }
+      }
+    )
+  })
+}
+
+const setWithings = (
+  config: WithingsConfig
+): Promise<AWS.S3.PutObjectOutput> => {
+  return new Promise((resolve, reject) => {
+    s3.putObject(
+      {
+        Bucket: process.env.AWS_BUCKET,
+        Key: 'withings.json',
+        Body: JSON.stringify(config),
+      },
+      (error, data) => {
+        if (error) {
+          reject(error)
+        } else {
+          resolve(data)
+        }
+      }
+    )
+  })
+}
 
 interface Activity {
   readonly steps: number
 }
 
-// This is probably not the best way to do this, since I'll have to re-generate
-// new tokens for each deploy. But I also don't want to run a server just to
-// generate & store these tokens.
-let accessToken = process.env.WITHINGS_KEY
-let refreshToken = process.env.WITHINGS_REFRESH_KEY
-
 const getNewToken = async (): Promise<void> => {
+  const { refresh_token } = await getWithings()
+
   const uri = 'https://account.withings.com/oauth2/token'
 
   const params = new URLSearchParams()
@@ -23,7 +73,7 @@ const getNewToken = async (): Promise<void> => {
   params.append('grant_type', 'refresh_token')
   params.append('client_id', process.env.WITHINGS_CLIENT_ID)
   params.append('client_secret', process.env.WITHINGS_CLIENT_SECRET)
-  params.append('refresh_token', refreshToken)
+  params.append('refresh_token', refresh_token)
 
   const options = {
     method: 'POST',
@@ -36,8 +86,7 @@ const getNewToken = async (): Promise<void> => {
   const response = await fetch(uri, options)
   const data = await response.json()
 
-  accessToken = data.access_token
-  refreshToken = data.refresh_token // eslint-disable-line require-atomic-updates
+  await setWithings(data)
 }
 
 const getSteps = async (): Promise<number> => {
@@ -46,9 +95,11 @@ const getSteps = async (): Promise<number> => {
     'yyyy-MM-dd'
   )}&enddateymd=${format(Date.now(), 'yyyy-MM-dd')}&data_fields=steps`
 
+  const { access_token } = await getWithings()
+
   const options = {
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${access_token}`,
     },
   }
 

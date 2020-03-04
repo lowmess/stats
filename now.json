@@ -26,6 +26,9 @@
   "env": {
     "NODE_ENV": "production",
     "ENGINE_API_KEY": "@apollo_key",
+    "AWS_ACCESS": "@aws_access",
+    "AWS_SECRET": "@aws_secret",
+    "AWS_BUCKET": "@aws_bucket",
     "FOURSQUARE_KEY": "@foursquare_key",
     "GITHUB_KEY": "@github_key",
     "GOODREADS_KEY": "@goodreads_key",
@@ -33,8 +36,6 @@
     "LASTFM_KEY": "@lastfm_key",
     "LASTFM_USERNAME": "@lastfm_username",
     "TWITTER_KEY": "@twitter_key",
-    "WITHINGS_KEY": "@withings_key",
-    "WITHINGS_REFRESH_KEY": "@withings_refresh_key",
     "WITHINGS_CLIENT_ID": "@withings_client_id",
     "WITHINGS_CLIENT_SECRET": "@withings_client_secret"
   }
