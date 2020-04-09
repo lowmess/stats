@@ -1,133 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>lowmess Stats</title>
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32" />
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16" />
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <style>
+      :root {
+        --primary: #f2930d;
+        --background: #fff;
+        --text: #443e35;
+        --muted: #efedea;
+      }
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>lowmess Stats</title>
-  <link rel="stylesheet" href="https://unpkg.com/tachyons@4.9.1/css/tachyons.css">
-  <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
-  <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
-  <style>
-    a {
-      text-decoration-skip: ink;
-      text-decoration-skip-ink: auto;
-    }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --background: #39342d;
+          --text: #efedea;
+          --muted: #2a2722;
+        }
+      }
 
-    .dark-gray {
-      color: #443e35;
-    }
+      html {
+        box-sizing: border-box;
+      }
 
-    .hover-orange:hover {
-      color: #f2930d;
-    }
+      *,
+      *::before,
+      *::after {
+        box-sizing: inherit;
+      }
 
-    .b--orange {
-      border-color: #f2930d;
-    }
+      @media (min-width: 90em) {
+        html {
+          font-size: 112.5%;
+        }
+      }
 
-    .td-orange {
-      text-decoration-color: #f2930d;
-    }
+      body {
+        min-height: 100vh;
+        margin: 0;
+        border-top: 0.5rem solid;
+        border-color: var(--primary);
+        padding-top: 4rem;
+        cursor: default;
+        background-color: var(--background);
+        color: var(--text);
+        font-family: Inter, system-ui, sans-serif;
+        font-feature-settings: 'calt', 'rlig', 'case', 'cv01';
+        line-height: 1.5;
+      }
 
-    .monospace {
-      font-family: sfmono, "roboto mono", consolas, monaco, monospace;
-    }
+      ::selection {
+        background-color: var(--primary);
+        color: var(--text);
+      }
 
-    .mw-logo {
-      max-width: 9rem;
-    }
+      header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1rem;
+      }
 
-    .items-baseline {
-      align-items: baseline;
-    }
-  </style>
-</head>
+      header svg {
+        color: var(--primary);
+        width: auto;
+        height: 1.5rem;
+      }
 
-<body class="pv4 ph3 mw8 center sans-serif dark-gray">
-  <header>
-    <svg class="w-100 mw-logo" viewBox="0 0 1005 162" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
-      <title>lowmess</title>
-      <path d="M189 81v81H94.5C72.13 162 54 143.87 54 121.5V27H27v135H0V0h81v114.75c0 13.5 6.833 20.25 20.25 20.25H162v-27h-54V0h27v81h54z"
-        fill="#f2930d" fill-rule="nonzero" />
-      <path d="M901.21 55.851c-5.703-6.544-15.783-13.101-30.37-13.101-23.369 0-37.13 16.474-37.13 30.37 0 40.63 58.5 22.13 58.5 47.26 0 11.191-11.868 16.87-21.37 16.87-11.854 0-18.628-6.713-20.852-13.155l-19.764 3.952c1.564 8.436 14.077 27.203 40.616 27.203 26.41 0 41.62-18.094 41.62-34.87 0-42.38-58.5-27.63-58.5-47.26 0-9.16 10.807-12.37 16.88-12.37 6.207 0 11.986 2.768 14.715 6.324l15.655-11.223zm92.25 0c-5.7-6.544-15.78-13.101-30.37-13.101-23.369 0-37.13 16.474-37.13 30.37 0 40.63 58.5 22.13 58.5 47.26 0 11.191-11.87 16.87-21.37 16.87-11.854 0-18.628-6.713-20.852-13.155l-19.764 3.952c1.564 8.436 14.077 27.203 40.616 27.203 26.41 0 41.62-18.094 41.62-34.87 0-42.38-58.5-27.63-58.5-47.26 0-9.16 10.807-12.37 16.88-12.37 6.21 0 11.99 2.768 14.72 6.324l15.65-11.223zM738.05 85.5h60.82s-7.66-24.75-30.41-24.75-30.41 24.75-30.41 24.75m30.41 51.75c17.312 0 26.609-15.5 28.469-19.809l18.368 5.51c-3.885 9.102-18.215 32.299-46.837 32.299-31.539 0-51.75-28.467-51.75-56.25 0-27.878 20.211-56.25 51.75-56.25 30.695 0 51.75 27.661 51.75 56.25l-.16 4.5H736.2c0 10.848 10.846 33.75 32.26 33.75m-403.88 0c-18.02 0-32.62-17.13-32.62-38.25 0-21.13 14.6-38.25 32.62-38.25 18.02 0 32.63 17.12 32.63 38.25 0 21.12-14.61 38.25-32.63 38.25m0-94.5c-29.2 0-52.87 25.18-52.87 56.25 0 31.06 23.67 56.25 52.87 56.25 29.2 0 52.88-25.19 52.88-56.25 0-31.07-23.68-56.25-52.88-56.25M556.96 45l-29.25 108h-18l-19.44-76.14L469.21 153h-18L421.96 45h20.25l19.52 78.09 20.98-75.84h15.75l19.04 74.58L536.71 45h20.25zm-288-36.098l.14 125.612c0 8.071 10.345 18.288 20.825 18.288l15.035.011v-17.956l-8.25-.007c-3.5 0-7.5-2.935-7.5-6.198V8.902h-20.25zm303.75 36.003v108h20.25v-75.38c0-9.921 8.24-16.87 16.87-16.87s16.88 6.992 16.88 16.87v75.38h20.25v-75.38c0-9.963 8.24-16.87 16.87-16.87s16.88 6.821 16.88 16.87v75.38h20.25v-75.38c0-18.37-14.99-34.87-34.87-34.87-17.948 0-26.88 13-26.88 13s-9.102-13-27.12-13c-11.186 0-19.13 5.7-19.13 5.7v-3.45h-20.25z"
-        fill="#443e35" fill-rule="nonzero" />
-    </svg>
-    <h1 class="f1 f-subheadline-m f-headline-l mt5 mb4 lh-solid">Stats</h1>
-    <hr class="w-100 mw4 ml0 mr0 ba bw2 b--orange" />
-  </header>
-  <main class="lh-copy mb5">
-    <h2 class="mt4 mb3 f3 mt5-ns mb4-ns f2-ns">In the Last 30 Days</h2>
-    <!-- Commits -->
-    <div class="flex flex-column flex-row-ns items-baseline mb2">
-      <div class="w-100 w-thirds-m w-25-l">
-        <span class="f4 f3-ns fw5">GitHub Commits</span>
-      </div>
-      <div class="w-100 w-two-thirds-m w-75-l">
-        <span class="f5 f4-ns monospace" data-stat="commits">&mdash;</span>
-      </div>
-    </div>
-    <!-- Tweets -->
-    <div class="flex flex-column flex-row-ns items-baseline mb2">
-      <div class="w-100 w-thirds-m w-25-l">
-        <span class="f4 f3-ns fw5">Tweets Sent</span>
-      </div>
-      <div class="w-100 w-two-thirds-m w-75-l">
-        <span class="f5 f4-ns monospace" data-stat="tweets">&mdash;</span>
-      </div>
-    </div>
-    <!-- Places -->
-    <div class="flex flex-column flex-row-ns items-baseline mb2">
-      <div class="w-100 w-thirds-m w-25-l">
-        <span class="f4 f3-ns fw5">Places Visited</span>
-      </div>
-      <div class="w-100 w-two-thirds-m w-75-l">
-        <span class="f5 f4-ns monospace" data-stat="places">&mdash;</span>
-      </div>
-    </div>
-    <!-- Steps -->
-    <div class="flex flex-column flex-row-ns items-baseline mb2">
-      <div class="w-100 w-thirds-m w-25-l">
-        <span class="f4 f3-ns fw5">Steps Taken</span>
-      </div>
-      <div class="w-100 w-two-thirds-m w-75-l">
-        <span class="f5 f4-ns monospace" data-stat="steps">&mdash;</span>
-      </div>
-    </div>
-    <!-- Songs -->
-    <div class="flex flex-column flex-row-ns items-baseline mb2">
-      <div class="w-100 w-thirds-m w-25-l">
-        <span class="f4 f3-ns fw5">Songs Played</span>
-      </div>
-      <div class="w-100 w-two-thirds-m w-75-l">
-        <span class="f5 f4-ns monospace" data-stat="songs">&mdash;</span>
-      </div>
-    </div>
-    <!-- Album -->
-    <div class="flex flex-column flex-row-ns items-baseline mb2">
-      <div class="w-100 w-thirds-m w-25-l">
-        <span class="f4 f3-ns fw5">Top Album</span>
-      </div>
-      <div class="w-100 w-two-thirds-m w-75-l">
-        <span class="f5 f4-ns monospace" data-stat="album">&mdash;</span>
-      </div>
-    </div>
+      main {
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+      }
 
-    <h2 class="mt4 mb3 f3 mt5-ns mb4-ns f2-ns">Currently Reading</h2>
-    <!-- Books -->
-    <div data-books-container>
-      <span class="f5 f4-ns monospace">&mdash;</span>
-    </div>
-  </main>
-  <footer class="monospace f6">
-    <p>Made by
-      <a href="https://lowmess.com" class="dark-gray hover-orange td-orange">Alec Lomas</a>
-      for
-      <a href="https://lowmess.com/about" class="dark-gray hover-orange td-orange">his &ldquo;about&rdquo; page</a>.
-    </p>
-  </footer>
-  <script src="/main.js"></script>
-</body>
+      h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        line-height: 1.25;
+        font-weight: 600;
+      }
 
+      svg:not([fill]) {
+        fill: currentColor;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 40rem;
+        margin-right: auto;
+        margin-left: auto;
+      }
+
+      .stat {
+        display: grid;
+        grid-template-columns: 1;
+        grid-gap: 0.5rem;
+        padding: 0.5rem 1rem;
+      }
+
+      @media (min-width: 28em) {
+        .stat {
+          grid-template-columns: 12rem 1fr;
+          grid-gap: 1rem;
+        }
+      }
+
+      .stat:nth-child(2n) {
+        background-color: var(--muted);
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 1rem;
+        line-height: inherit;
+        font-weight: 600;
+      }
+
+      .value {
+        font-feature-settings: 'tnum', 'cv01';
+      }
+
+      .book + .book {
+        margin-top: 0.5rem;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="container">
+      <svg
+        viewBox="0 0 281 241"
+        xmlns="http://www.w3.org/2000/svg"
+        width="25"
+        height="21"
+        aria-hidden
+      >
+        <path
+          d="M280 120v120c-46.795 0-93.59.148-140.385-.001-24.624-.235-48.379-16.914-56.455-40.76-2.093-6.18-3.139-12.726-3.16-19.207V40H40v200H0V0h120c0 60.088-.568 120.178.002 180.263.164 10.317 9.135 19.703 20.03 19.737H240v-40h-80V0h40v120h80z"
+        />
+      </svg>
+
+      <h1>30 Day Stats</h1>
+    </header>
+
+    <main class="container">
+      <div class="stat">
+        <h2>GitHub Commits</h2>
+        <div class="value" data-stat="commits">&mdash;</div>
+      </div>
+
+      <div class="stat">
+        <h2>Tweets Sent</h2>
+        <div class="value" data-stat="tweets">&mdash;</div>
+      </div>
+
+      <div class="stat">
+        <h2>Steps Taken</h2>
+        <div class="value" data-stat="steps">&mdash;</div>
+      </div>
+
+      <div class="stat">
+        <h2>Places Visited</h2>
+        <div class="value" data-stat="places">&mdash;</div>
+      </div>
+
+      <div class="stat">
+        <h2>Songs Played</h2>
+        <div class="value" data-stat="songs">&mdash;</div>
+      </div>
+
+      <div class="stat">
+        <h2>Top Album</h2>
+        <div class="value" data-stat="album">&mdash;</div>
+      </div>
+
+      <div class="stat books">
+        <h2>Currently Reading</h2>
+        <div data-books-container>
+          <div class="book">&mdash;</div>
+        </div>
+      </div>
+    </main>
+
+    <script src="/main.js"></script>
+  </body>
 </html>

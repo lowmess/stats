@@ -3,8 +3,8 @@ const stat = (selector, value) => {
 }
 
 const markupBook = ({ name, author }) => `
-  <div class="mb2">
-    <span class="f5 f4-ns monospace"><em>${name}</em>, ${author}</span>
+  <div class="book">
+    &ldquo;${name}&rdquo;, ${author}
   </div>
 `
 
@@ -48,24 +48,40 @@ fetch('/graphql', {
   .then(json => {
     if (json.data) {
       // Commits
-      if (json.data.commits) stat('commits', json.data.commits.toLocaleString())
+      if (typeof json.data.commits === 'number') {
+        stat('commits', json.data.commits.toLocaleString())
+      }
+
       // Tweets
-      if (json.data.tweets) stat('tweets', json.data.tweets.toLocaleString())
+      if (typeof json.data.tweets === 'number') {
+        stat('tweets', json.data.tweets.toLocaleString())
+      }
+
       // Places
-      if (json.data.places) stat('places', json.data.places.toLocaleString())
+      if (typeof json.data.places === 'number') {
+        stat('places', json.data.places.toLocaleString())
+      }
+
       // Steps
-      if (json.data.steps) stat('steps', json.data.steps.toLocaleString())
+      if (typeof json.data.steps === 'number') {
+        stat('steps', json.data.steps.toLocaleString())
+      }
+
       // Songs
-      if (json.data.songs) stat('songs', json.data.songs.toLocaleString())
+      if (typeof json.data.songs === 'number') {
+        stat('songs', json.data.songs.toLocaleString())
+      }
+
       // Album
       if (json.data.album) {
         if (json.data.album.name && json.data.album.artist) {
           stat(
             'album',
-            `<em>${json.data.album.name}</em>, ${json.data.album.artist}`
+            `&ldquo;${json.data.album.name}&rdquo;, ${json.data.album.artist}`
           )
         }
       }
+
       // Book
       if (json.data.books) {
         fillBooks(json.data.books)
