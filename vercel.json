@@ -1,14 +1,13 @@
 {
   "version": 2,
-  "alias": ["stats.lowmess.com", "lowmess-stats.now.sh"],
   "builds": [
     {
       "src": "graphql/index.ts",
-      "use": "@now/node"
+      "use": "@vercel/node"
     },
     {
       "src": "public/*",
-      "use": "@now/static"
+      "use": "@vercel/static"
     }
   ],
   "routes": [
