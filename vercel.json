@@ -1,14 +1,13 @@
 {
   "version": 2,
-  "alias": ["stats.lowmess.com", "lowmess-stats.now.sh"],
   "builds": [
     {
       "src": "graphql/index.ts",
-      "use": "@now/node"
+      "use": "@vercel/node"
     },
     {
       "src": "public/*",
-      "use": "@now/static"
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -25,7 +24,6 @@
   ],
   "env": {
     "NODE_ENV": "production",
-    "ENGINE_API_KEY": "@apollo_key",
     "AWS_ACCESS": "@aws_access",
     "AWS_SECRET": "@aws_secret",
     "AWS_BUCKET": "@aws_bucket",
