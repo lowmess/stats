@@ -24,7 +24,6 @@
   ],
   "env": {
     "NODE_ENV": "production",
-    "ENGINE_API_KEY": "@apollo_key",
     "AWS_ACCESS": "@aws_access",
     "AWS_SECRET": "@aws_secret",
     "AWS_BUCKET": "@aws_bucket",
