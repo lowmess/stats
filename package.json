@@ -25,7 +25,6 @@
     "@types/xml2js": "^0.4.5",
     "abort-controller": "^3.0.0",
     "apollo-server-express": "^2.18.2",
-    "apollo-server-plugin-response-cache": "^0.4.1",
     "aws-sdk": "^2.774.0",
     "date-fns": "^2.16.1",
     "express": "^4.17.1",
