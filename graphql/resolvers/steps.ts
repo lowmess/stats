@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-
 import { URLSearchParams } from 'url'
 import aws from 'aws-sdk'
 import format from 'date-fns/format'
@@ -115,11 +113,10 @@ const getSteps = async (): Promise<number> => {
     throw new Error(`Withings did not provide steps data in their response`)
   }
 
-  let amount = 0
-
-  data.body.activities.forEach((activity: Activity) => {
-    amount += activity.steps
-  })
+  const amount = data.body.activities.reduce(
+    (a: number, b: Activity) => a + b.steps,
+    0
+  )
 
   return amount || null
 }
