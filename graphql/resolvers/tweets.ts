@@ -10,7 +10,7 @@ interface Tweet {
 const thirtyDaysAgoTime = thirtyDaysAgo().getTime()
 
 const getTweets = async (
-  tweets: Set<number> = new Set(),
+  tweets: Set<number> = new Set(), //eslint-disable-line default-param-last
   maxId?: number
 ): Promise<number> => {
   let uri =

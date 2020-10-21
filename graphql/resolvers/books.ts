@@ -1,4 +1,4 @@
-import xml2js from 'xml2js'
+import { parseString } from 'xml2js'
 import fetch from '../lib/fetchWithTimeout'
 
 // this insane bullshit is 100% goodreads fault. also what `xml2js` spits out.
@@ -27,7 +27,7 @@ const getBooks = async (): Promise<Book[]> => {
 
   const books: Book[] = []
 
-  xml2js.parseString(data, { normalizeTags: true }, (error, result) => {
+  parseString(data, { normalizeTags: true }, (error, result) => {
     if (error) {
       throw new Error(error.message)
     }
