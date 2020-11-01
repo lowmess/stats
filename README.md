@@ -8,7 +8,6 @@ This pad contains some secret keys which you will need to provide as environment
 
 Here's the keys you need:
 
-- `ENGINE_API_KEY` - Apollo Engine API key (optional)
 - `AWS_ACCESS` - AWS access key ID
 - `AWS_SECRET` - AWS secret access key
 - `AWS_BUCKET` - Bucket name to find `withings.json` (see below)
