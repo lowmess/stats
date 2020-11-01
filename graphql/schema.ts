@@ -1,6 +1,7 @@
 /* eslint-disable no-shadow */
 
 import { gql } from 'apollo-server-express'
+import logError from './lib/logError'
 import getCommits from './resolvers/commits'
 import getTweets from './resolvers/tweets'
 import getPlaces from './resolvers/places'
@@ -41,7 +42,7 @@ const resolvers = {
         const commits = await getCommits()
         return commits
       } catch (error) {
-        console.error(error.message ? error.message : error)
+        logError('Commits resolver error', error.message)
         return null
       }
     },
@@ -51,7 +52,7 @@ const resolvers = {
         const tweets = await getTweets()
         return tweets
       } catch (error) {
-        console.error(error.message ? error.message : error)
+        logError('Tweets resolver error', error.message)
         return null
       }
     },
@@ -61,7 +62,7 @@ const resolvers = {
         const places = await getPlaces()
         return places
       } catch (error) {
-        console.error(error.message ? error.message : error)
+        logError('Places resolver error', error.message)
         return null
       }
     },
@@ -71,7 +72,7 @@ const resolvers = {
         const steps = await getSteps()
         return steps
       } catch (error) {
-        console.error(error.message ? error.message : error)
+        logError('Steps resolver error', error.message)
         return null
       }
     },
@@ -81,7 +82,7 @@ const resolvers = {
         const songs = await getSongs()
         return songs
       } catch (error) {
-        console.error(error.message ? error.message : error)
+        logError('Songs resolver error', error.message)
         return null
       }
     },
@@ -90,7 +91,7 @@ const resolvers = {
         const album = await getAlbum()
         return album
       } catch (error) {
-        console.error(error.message ? error.message : error)
+        logError('Album resolver error', error.message)
         return null
       }
     },
@@ -100,7 +101,7 @@ const resolvers = {
         const books = await getBooks()
         return books
       } catch (error) {
-        console.error(error.message ? error.message : error)
+        logError('Books resolver error', error.message)
         return null
       }
     },

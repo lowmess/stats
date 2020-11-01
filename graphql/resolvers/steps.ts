@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/camelcase */
-
 import { URLSearchParams } from 'url'
 import aws from 'aws-sdk'
 import format from 'date-fns/format'
 import fetch from '../lib/fetchWithTimeout'
+import logError from '../lib/logError'
 import { thirtyDaysAgo } from '../lib/date'
 
 aws.config.update({
@@ -28,6 +27,7 @@ const getWithings = (): Promise<WithingsConfig> => {
       },
       (error, data) => {
         if (error) {
+          logError('S3 read error', error.message)
           reject(error)
         } else {
           const config = JSON.parse(data.Body.toString())
@@ -50,6 +50,7 @@ const setWithings = (
       },
       (error, data) => {
         if (error) {
+          logError('S3 write error', error.message)
           reject(error)
         } else {
           resolve(data)
