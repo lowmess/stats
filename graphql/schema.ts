@@ -25,7 +25,7 @@ const typeDefs = gql`
   type Query {
     commits: Int @cacheControl(maxAge: 3600)
     tweets: Int @cacheControl(maxAge: 3600)
-    places: Int @cacheControl(maxAge: 86400)
+    places: Int @cacheControl(maxAge: 21600)
     steps: Int @cacheControl(maxAge: 3600)
     songs: Int @cacheControl(maxAge: 3600)
     album: Album @cacheControl(maxAge: 3600)

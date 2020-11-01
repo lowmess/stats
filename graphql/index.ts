@@ -1,5 +1,6 @@
 import express from 'express'
 import { ApolloServer, Config } from 'apollo-server-express'
+import responseCachePlugin from 'apollo-server-plugin-response-cache'
 import { typeDefs, resolvers } from './schema'
 
 const defaultQuery = `{
@@ -39,6 +40,8 @@ if (process.env.NODE_ENV === 'production') {
       },
     ],
   }
+
+  config.plugins = [responseCachePlugin()]
 }
 
 const server = new ApolloServer(config)
