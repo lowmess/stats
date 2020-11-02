@@ -67,7 +67,7 @@ interface Activity {
 const getNewToken = async (): Promise<void> => {
   const { refresh_token } = await getWithings()
 
-  const uri = 'https://account.withings.com/oauth2/token'
+  const uri = 'https://wbsapi.withings.net/v2/oauth2'
 
   const params = new URLSearchParams()
 
