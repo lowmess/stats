@@ -10,7 +10,8 @@
     "start": "vercel dev",
     "deploy": "vercel",
     "lint-staged": "lint-staged",
-    "typecheck": "tsc -p tsconfig.json --pretty --noEmit"
+    "typecheck": "tsc -p tsconfig.json --pretty --noEmit",
+    "update-token": "node ./update-withings-token"
   },
   "repository": {
     "type": "git",

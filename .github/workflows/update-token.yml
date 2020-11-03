@@ -1,0 +1,29 @@
+name: Update Withings token
+
+on:
+  schedule:
+    # Run every 3 hours
+    - cron: '0 */3 * * *'
+
+jobs:
+  request:
+    name: Update token
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+
+      - name: Get npm cache
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies with npm
+        run: npm install
+
+      - name: fetch new token
+        run: AWS_ACCESS=${{ secrets.AWS_ACCESS }} AWS_SECRET=${{ secrets.AWS_SECRET }} AWS_BUCKET=${{ secrets.AWS_BUCKET }} WITHINGS_CLIENT_ID=${{ secrets.WITHINGS_CLIENT_ID }} WITHINGS_CLIENT_SECRET=${{ secrets.WITHINGS_CLIENT_SECRET }} npm run update-token
