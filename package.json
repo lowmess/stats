@@ -10,7 +10,8 @@
     "start": "vercel dev",
     "deploy": "vercel",
     "lint-staged": "lint-staged",
-    "typecheck": "tsc -p tsconfig.json --pretty --noEmit"
+    "typecheck": "tsc -p tsconfig.json --pretty --noEmit",
+    "update-token": "node ./update-withings-token"
   },
   "repository": {
     "type": "git",
@@ -35,6 +36,7 @@
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
+    "dotenv": "^8.2.0",
     "eslint": "^7.12.1",
     "eslint-config-lowmess": "^4.0.0",
     "husky": "^4.3.0",

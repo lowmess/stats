@@ -1,4 +1,3 @@
-import { URLSearchParams } from 'url'
 import aws from 'aws-sdk'
 import format from 'date-fns/format'
 import fetch from '../lib/fetchWithTimeout'
@@ -38,56 +37,8 @@ const getWithings = (): Promise<WithingsConfig> => {
   })
 }
 
-const setWithings = (
-  config: WithingsConfig
-): Promise<AWS.S3.PutObjectOutput> => {
-  return new Promise((resolve, reject) => {
-    s3.putObject(
-      {
-        Bucket: process.env.AWS_BUCKET,
-        Key: 'withings.json',
-        Body: JSON.stringify(config),
-      },
-      (error, data) => {
-        if (error) {
-          logError('S3 write error', error.message)
-          reject(error)
-        } else {
-          resolve(data)
-        }
-      }
-    )
-  })
-}
-
 interface Activity {
   readonly steps: number
-}
-
-const getNewToken = async (): Promise<void> => {
-  const { refresh_token } = await getWithings()
-
-  const uri = 'https://wbsapi.withings.net/v2/oauth2'
-
-  const params = new URLSearchParams()
-
-  params.append('grant_type', 'refresh_token')
-  params.append('client_id', process.env.WITHINGS_CLIENT_ID)
-  params.append('client_secret', process.env.WITHINGS_CLIENT_SECRET)
-  params.append('refresh_token', refresh_token)
-
-  const options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: params.toString(),
-  }
-
-  const response = await fetch(uri, options)
-  const data = await response.json()
-
-  await setWithings(data)
 }
 
 const getSteps = async (): Promise<number> => {
@@ -106,11 +57,6 @@ const getSteps = async (): Promise<number> => {
 
   const response = await fetch(uri, options)
   const data = await response.json()
-
-  if (data.status === 401) {
-    await getNewToken()
-    return getSteps()
-  }
 
   if (!data?.body?.activities) {
     throw new Error(`Withings did not provide steps data in their response`)
