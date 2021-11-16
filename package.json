@@ -27,7 +27,7 @@
     "abort-controller": "^3.0.0",
     "apollo-server-express": "^2.19.0",
     "apollo-server-plugin-response-cache": "^0.5.6",
-    "aws-sdk": "^2.783.0",
+    "aws-sdk": "^2.814.0",
     "date-fns": "^2.16.1",
     "express": "^4.17.1",
     "graphql": "^15.4.0",
