@@ -1,6 +1,12 @@
 import fetch from '../lib/fetchWithTimeout'
 import { thirtyDaysAgo } from '../lib/date'
 
+type Checkin = {
+  venue: {
+    id: string
+  }
+}
+
 const getPlaces = async (): Promise<number> => {
   const uri = `https://api.foursquare.com/v2/users/self/checkins?oauth_token=${
     process.env.FOURSQUARE_KEY
@@ -18,7 +24,13 @@ const getPlaces = async (): Promise<number> => {
   let places = null
 
   if (Object.keys(data.response).length !== 0) {
-    places = data.response.checkins.items.length
+    const venueIds = data.response.checkins.items.map(
+      (checkin: Checkin) => checkin.venue.id
+    )
+
+    const uniqueVenueIds = new Set(venueIds)
+
+    places = uniqueVenueIds.size
   }
 
   return places
