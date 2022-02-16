@@ -11,7 +11,8 @@
     "deploy": "vercel",
     "lint-staged": "lint-staged",
     "typecheck": "tsc -p tsconfig.json --pretty --noEmit",
-    "update-token": "node ./update-withings-token"
+    "update-token": "node ./update-withings-token",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -44,12 +45,6 @@
     "prettier": "^2.5.1",
     "prettier-config-lowmess": "^0.3.0",
     "vercel": "^23.1.2"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm run lint-staged",
-      "pre-push": "npm run typecheck"
-    }
   },
   "lint-staged": {
     "*.{js,ts}": [
