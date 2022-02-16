@@ -13,7 +13,7 @@ const getTweets = async (
   tweets: Set<number> = new Set(),
   paginationToken: number = null
 ): Promise<number> => {
-  let uri = `https://api.twitter.com/2/users/${process.env.TWITTER_USER_ID}/tweets?max_results=100&tweet.fields=id,created_at`
+  let uri = `https://api.twitter.com/2/users/${process.env.TWITTER_USER_ID}/tweets?max_results=100&tweet.fields=id,created_at&exclude=retweets`
 
   if (paginationToken) uri += `&pagination_token=${paginationToken}`
 
