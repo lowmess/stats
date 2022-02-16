@@ -21,20 +21,5 @@
       "headers": { "Cache-Control": "s-maxage=86400" },
       "dest": "/public/$1"
     }
-  ],
-  "env": {
-    "NODE_ENV": "production",
-    "AWS_ACCESS": "@aws_access",
-    "AWS_SECRET": "@aws_secret",
-    "AWS_BUCKET": "@aws_bucket",
-    "FOURSQUARE_KEY": "@foursquare_key",
-    "GITHUB_KEY": "@github_key",
-    "GOODREADS_KEY": "@goodreads_key",
-    "GOODREADS_ID": "@goodreads_id",
-    "LASTFM_KEY": "@lastfm_key",
-    "LASTFM_USERNAME": "@lastfm_username",
-    "TWITTER_KEY": "@twitter_key",
-    "WITHINGS_CLIENT_ID": "@withings_client_id",
-    "WITHINGS_CLIENT_SECRET": "@withings_client_secret"
-  }
+  ]
 }

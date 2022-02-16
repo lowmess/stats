@@ -61,10 +61,11 @@ const setWithings = (config) => {
 const getNewToken = async () => {
   const { refresh_token } = await getWithings()
 
-  const uri = 'https://account.withings.com/oauth2/token'
+  const uri = 'https://wbsapi.withings.net/v2/oauth2'
 
   const params = new URLSearchParams()
 
+  params.append('action', 'requesttoken')
   params.append('grant_type', 'refresh_token')
   params.append('client_id', process.env.WITHINGS_CLIENT_ID)
   params.append('client_secret', process.env.WITHINGS_CLIENT_SECRET)
