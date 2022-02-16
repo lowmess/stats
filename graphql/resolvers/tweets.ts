@@ -10,13 +10,12 @@ interface Tweet {
 const thirtyDaysAgoTime = thirtyDaysAgo().getTime()
 
 const getTweets = async (
-  tweets: Set<number> = new Set(), //eslint-disable-line default-param-last
-  maxId?: number
+  tweets: Set<number> = new Set(),
+  paginationToken: number = null
 ): Promise<number> => {
-  let uri =
-    'https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=lowmess&trim_user=1&exclude_replies=0&include_rts=1&count=50'
+  let uri = `https://api.twitter.com/2/users/${process.env.TWITTER_USER_ID}/tweets?max_results=100&tweet.fields=id,created_at`
 
-  if (maxId) uri += `&max_id=${maxId}`
+  if (paginationToken) uri += `&pagination_token=${paginationToken}`
 
   const options = {
     headers: {
@@ -25,28 +24,25 @@ const getTweets = async (
   }
 
   const response = await fetch(uri, options)
-  const data = await response.json()
+  const { meta, data } = await response.json()
 
-  if (data.errors) {
+  if (data?.errors) {
     throw new Error(data.errors[0].message)
   }
 
-  let latestTweetTime = 0
   let latestTweetId = 0
 
   data.forEach((tweet: Tweet) => {
-    const time = new Date(tweet.created_at).getTime()
+    const tweetTime = new Date(tweet.created_at).getTime()
 
-    if (time > thirtyDaysAgoTime && !tweet.retweeted_status) {
+    if (tweetTime > thirtyDaysAgoTime) {
+      latestTweetId = tweet.id
       tweets.add(tweet.id)
     }
-
-    latestTweetTime = time
-    latestTweetId = tweet.id
   })
 
-  if (latestTweetTime > thirtyDaysAgoTime) {
-    return getTweets(tweets, latestTweetId)
+  if (meta.oldest_id === latestTweetId) {
+    return getTweets(tweets, meta.next_token)
   }
 
   return tweets.size
